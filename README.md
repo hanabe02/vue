@@ -16,6 +16,6 @@ vue3 버전을 사용하여 vuex -> pinia 를 사용
       플러그인 지원 - vue DevTools 와 통합되며, 플러그인을 쉽게 추가 가능하다.
 
 Vue 앞단
-
+  pnpm 사용 
 Vue 뒷단
   sql - 프로시저 사용
