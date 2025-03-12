@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.logistic.abroad.dao.WorkplaceInfoDAO">
+
+    <resultMap id="getAbroadScheduleList" type="abroadScheduleInfoTO">
+        <result property="abroadScheduleCode" 				column="ABROAD_SCHEDULE_CODE"/>
+        <result property="eventName" 					    column="EVENT_NAME"/>
+        <result property="eventType" 				        column="EVENT_TYPE"/>
+        <result property="eventLocation" 		            column="EVENT_LOCATION"/>
+        <result property="eventDate" 	                    column="EVENT_DATE"/>
+        <result property="eventExplanation" 			    column="EVENT_EXPLANATION"/>
+        <result property="eventTarget"                      column="EVENT_TARGET"/>
+        <result property="eventHost" 		                column="EVENT_HOST"/>
+        <result property="eventState" 			            column="EVENT_STATE"/>
+    </resultMap>
+
+    <select id="getAbroadScheduleList" resultMap="getAbroadScheduleList">
+        SELECT * FROM ABROAD_SCHEDULE
+    </select>
+
+    <delete id="deleteAbroadScheduleCode">
+        DELETE
+        FROM ABROAD_SCHEDULE
+        WHERE ABROAD_SCHEDULE_CODE=#{abroadscheduleCode}
+    </delete>
+
+    <insert id="insertAbroadScheduleCode" parameterType="abroadScheduleInfoTO">
+        INSERT INTO ABROAD_SCHEDULE
+        ( ABROAD_SCHEDULE_CODE
+        , EVENT_NAME
+        , EVENT_TYPE
+        , EVENT_LOCATION
+        , EVENT_DATE
+        , EVENT_EXPLANATION
+        , EVENT_TARGET
+        , EVENT_HOST
+        , EVENT_STATE)
+        VALUES ( #{abroadScheduleCode:VARCHAR}
+               , #{eventName:VARCHAR}
+               , #{eventType:VARCHAR}
+               , #{eventLocation:VARCHAR}
+               , #{eventDate:VARCHAR}
+               , #{eventExplanation:VARCHAR}
+               , #{eventTarget:VARCHAR}
+               , #{eventHost:VARCHAR}
+               , #{eventState:VARCHAR}
+    </insert>
+
+    <update id="updateAbroadScheduleCode" parameterType="abroadScheduleInfoTO">
+        UPDATE ABROAD_SCHEDULE SET
+            ABROAD_SCHEDULE_CODE = #{abroadScheduleCode:VARCHAR}
+                                 , EVENT_NAME = #{eventName:VARCHAR}
+                                 , EVENT_TYPE = #{eventType:VARCHAR}
+                                 , EVENT_LOCATION = #{eventLocation:VARCHAR}
+                                 , EVENT_DATE = #{eventDate:VARCHAR}
+                                 , EVENT_EXPLANATION = #{eventExplanation:VARCHAR}
+                                 , EVENT_TARGET = #{eventTarget:VARCHAR}
+                                 , EVENT_HOST = #{eventHost:VARCHAR}
+                                 , EVENT_STATE = #{eventState:VARCHAR}
+        WHERE ABROAD_SCHEDULE = #{abroadScheduleCode}
+    </update>
+
+</mapper>
