@@ -22,14 +22,21 @@ vue3 버전을 사용하여 vuex -> pinia 를 사용
   sql - 프로시저 사용
   
 **dump imp 하는 방법**
-  sqlplus/ nolog
-  conn /as sysdba
-  create user [아이디] identified by [비밀번호] default tablespace system;
-  grant connect, resource, dba to [아이디]
-  conn [아이디/비번]
-  exit
-  imp userid=[아이디]/[비번] file='"[덤프 경로]"' full=y;
+  1. sqlplus/ nolog
+
+  3. conn /as sysdba
+
+  5. create user [아이디] identified by [비밀번호] default tablespace system;
+
+  7. grant connect, resource, dba to [아이디]
+
+  9. conn [아이디/비번]
+
+  11. exit
+
+  13. imp userid=[아이디]/[비번] file='"[덤프 경로]"' full=y;
   
 **dump exp 하는 방법**
-  lsnrctl services
-  exp 아이디/비번@[localhost:포트번호/xe : 덤프가 설치되어 있는경우 -> 이 경우는 오라클 db 의 경로] file=[dmp 설치할 경로]
+  1. lsnrctl services
+  2. exp 아이디/비번@[localhost:포트번호/xe : 덤프가 설치되어 있는경우 -> 이 경우는 오라클 db 의 경로] file=[dmp 설치할 경로]
+
