@@ -40,3 +40,9 @@ vue3 버전을 사용하여 vuex -> pinia 를 사용
   1. lsnrctl services
   2. exp 아이디/비번@[localhost:포트번호/xe : 덤프가 설치되어 있는경우 -> 이 경우는 오라클 db 의 경로] file=[dmp 설치할 경로]
 
+""
+
+
+
+
+
