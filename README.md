@@ -40,7 +40,23 @@ vue3 버전을 사용하여 vuex -> pinia 를 사용
   1. lsnrctl services
   2. exp 아이디/비번@[localhost:포트번호/xe : 덤프가 설치되어 있는경우 -> 이 경우는 오라클 db 의 경로] file=[dmp 설치할 경로]
 
-""
+
+**Bitbucket **
+  git 저장소를 관리하는 저장소
+
+**클라우드**
+  가상 공간이라는 개념 -> 인터넷에서 데이터를 저장하고 실행하는 공간이다.
+  
+  클라우드의 특징
+  1. 어디서든 접근 가능
+  2. 물리적 서버 불필요
+  3. 공유 및 협업 용이
+
+  클라우드 기반 Bitbucket : bitbucket cloud 를 사용하면 코드를 로컬 에 저장하는 게 아니라 bitbucket 서버에 저장하게 된다.
+  
+
+**sourceTree **
+  git 을 편리하게 사용할 수 있게 도와주는 툴 
 
 
 
