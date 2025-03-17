@@ -76,9 +76,22 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
 ### **추가 구현 : 로그인 부분 + 로그아웃 코드 구현, 계획 날짜 2025년 3월 14일** 
     - 로그인 : 하드 코딩 부분 -> **Google OAuth 2.0 로그인 적용, 2025년 3월 17일**
     
-     코드 추가
-      + 뒷단 : vue/Nuxt_Back/src/main/java/kr/co/seoulit/common 
-      + 앞단 : pages/login.vue 
+     📦 프로젝트 루트
+        ├── 📂 frontend (Vue.js)
+        │   ├── login.vue  # Google 로그인 버튼
+        │   ├── store.js  # 상태 관리 (Pinia)
+        │   ├── api.js  # API 요청 관리
+        │   └── main.js  # Vue 초기 설정
+        │
+        ├── 📂 backend (Spring Boot)
+        │   ├── SecurityConfig.java  # Spring Security 설정
+        │   ├── CustomOAuth2UserService.java  # OAuth2 로그인 처리
+        │   ├── OAuthAttributes.java  # OAuth2 사용자 정보 변환
+        │   ├── SessionUser.java  # 세션 관리
+        │   ├── Users.java  # 사용자 엔티티
+        │   ├── UserRepository.java  # JPA 레포지토리
+        │   └── application.properties  # 환경 설정
+        └── README.md
     - 로그아웃 기능 미구현(추가 예정)
     
 
