@@ -68,12 +68,12 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
 
 ---
 
-## **sourceTree**
+### **sourceTree**
   - git 을 편리하게 사용할 수 있게 도와주는 툴 
 
 ---
 
-### **추가 구현 : 로그인 부분 + 로그아웃 코드 구현, 계획 날짜 2025년 3월 14일** 
+### **추가 구현 : 로그인 부분, 계획 날짜 2025년 3월 14일** 
     - 로그인 : 하드 코딩 부분 -> **Google OAuth 2.0 로그인 적용, 2025년 3월 17일**
     
      📦 프로젝트 루트
@@ -92,7 +92,7 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
         │   ├── UserRepository.java  # JPA 레포지토리
         │   └── application.properties  # 환경 설정
         └── README.md
-    - 로그아웃 기능 미구현(추가 예정)
+
     
 
 
