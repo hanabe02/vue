@@ -1,10 +1,6 @@
-# vue
+# vue    
 
-+ ** 추가 구현 : 로그인 부분 + 로그아웃 코드 구현, 계획 날짜 2025년 3월 14일 **
-    - 로그인 부분은 -> 하드 코딩 되어 있고
-    - 로그아웃 부분은 -> 구현 x
-
-vue - nuxt - typescirpt 사용
+**vue - nuxt - typescirpt 사용**
 
 vuetify 컴포넌트 사용
   : vue.js 기반의 인기 있는 material Design ui 프레임워크로 다양한 ui 컴포넌트를 제공하여 개발자가 빠르게 웹 애플리케이션을 구축 할 수 있도록 한다.
@@ -27,17 +23,11 @@ vue3 버전을 사용하여 vuex -> pinia 를 사용
   
 **dump imp 하는 방법**
   1. sqlplus/ nolog
-
   3. conn /as sysdba
-
   5. create user [아이디] identified by [비밀번호] default tablespace system;
-
   7. grant connect, resource, dba to [아이디]
-
   9. conn [아이디/비번]
-
   11. exit
-
   13. imp userid=[아이디]/[비번] file='"[덤프 경로]"' full=y;
   
 **dump exp 하는 방법**
@@ -62,6 +52,9 @@ vue3 버전을 사용하여 vuex -> pinia 를 사용
 **sourceTree **
   git 을 편리하게 사용할 수 있게 도와주는 툴 
 
+**추가 구현 : 로그인 부분 + 로그아웃 코드 구현, 계획 날짜 2025년 3월 14일** 
+    - 로그인 부분은 -> 하드 코딩 되어 있고
+    - 로그아웃 부분은 -> 구현 x
 
 
 
