@@ -1,6 +1,8 @@
 # vue    
 
-**vue - nuxt - typescirpt 사용**
+🌟 Vue 프로젝트 (Vue 3 + Nuxt + TypeScript)
+이 프로젝트는 Vue 3, Nuxt, TypeScript를 기반으로 하고 있으며,
+UI 라이브러리로 Vuetify를 사용하여 Material Design 스타일의 웹 애플리케이션을 구축합니다.
 
 vuetify 컴포넌트 사용
   : vue.js 기반의 인기 있는 material Design ui 프레임워크로 다양한 ui 컴포넌트를 제공하여 개발자가 빠르게 웹 애플리케이션을 구축 할 수 있도록 한다.
