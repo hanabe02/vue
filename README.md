@@ -73,9 +73,8 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
 
 ---
 
-### **추가 구현 : 로그인, 2025년 3월 14일** 
-  **수정사항**
-      - 로그인 : 하드 코딩 부분 -> **Google OAuth 2.0 로그인 적용, 2025년 3월 17일**
+### **추가 구현 : 로그인, 2025년 3월 14일 ~ 2025년 3월 17일** 
+      - 로그인 : 하드 코딩 부분 -> **Google OAuth 2.0 로그인 적용**
        📦 프로젝트 루트
           ├── 📂 frontend (Vue.js)
           │   ├── login.vue  # Google 로그인 버튼
@@ -93,14 +92,73 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
           │   └── application.properties  # 환경 설정
           └── README.md
 
-  **수정사항**
-      - 로그인 
-> 웹 브라우저에서 다른 도메인(origin)의 리소스를 요청할 때 보안 문제를 해결하기 위한 메커니즘
-    > 로그인 DB 정보, 백단에서 가져오기 : CORS(cross-Origin Resource Sharing) 기술 사용
-      cors? -> 웹 브라우저에서 다른 도메인(origin)의 리소스를 요청할 때 보안 문제를 해결하기 위한 메커니즘
-    
+### **추가 구현 : 백에서 프론트 url 요청, db 데이터 가져오기 2025년 3월 18일 **
+      - 로그인 DB 정보, 백단에서 가져오기 : CORS(cross Origin Resource Sharing) 기술 사용
+        cors? -> 웹 브라우저에서 다른 도메인(origin)의 리소스를 요청할 때 보안 문제를 해결하기 위한 메커니즘
 
+        cors 를 사용하는 경우 : 
+          1. 사용자 로그인 버튼 클릭 http://localhost:8282/oauth2/authorization/google : OAuth 로그인
+          2. 구글 OAuth 인증 성공 후 http://localhost:3000/auth-callback 리디렉션 
+          3. 앞단에서 fetch() 사용 http://localhost:8282/auth/user 에 사용자 정보 요청
+          4. cors 정책으로 인해 브라우저가 http://localhost:8282/auth/user 요청 차단
+            -> 프론트엔드 도메인(localhost:3000)과 백엔드(localhost:8282)이 다르기 때문👍
+            이 경우, cors 설정이 없으면 보안 정책(same-origin policy, sop) 때문에 요청이 차단됨!
 
+        cors 가 필요없는 경우 :
+          1. 백엔드 내부에서 실행된 코드
+          2. 서버가 백엔드 내부에서 데이터베이스 DB 를 조회하고 그 결과를 반환하는 것
+          3. cors는 브라우저에서 발생하는 요청에 대한 보안 정책이기 때문에, 이 경우에는 영향을 받지 않음
+            -> 즉 여기서는 요청이 백엔드 내부에서 이루어지기 때문에 브라우저의 CORS 정책이 적용되지 않았던 것
+
+        SecurityCode.java 코드 일부
+          @Bean
+            public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                        .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ CORS 설정 추가
+                        .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+                        .authorizeRequests(auth -> auth
+                                .antMatchers("/", "/auth/**", "/oauth2/**").permitAll()
+                                .anyRequest().authenticated()
+                        )
+                        .oauth2Login(oauth2 -> oauth2
+                                .successHandler((request, response, authentication) -> {
+                                    // ✅ 세션에서 사용자 정보 확인
+                                    SessionUser user = (SessionUser) request.getSession().getAttribute("user");
+        
+                                    if (user != null) {
+                                        System.out.println("✅ 로그인 성공: 세션에 사용자 정보 저장됨 → " + user);
+                                    } else {
+                                        System.out.println("🚨 로그인 성공했지만 세션에 사용자 정보 없음!");
+                                    }
+        
+                                    // ✅ 프론트엔드의 `/auth-callback` 페이지로 리디렉션
+                                    response.sendRedirect("http://localhost:3000/auth-callback");
+                                })
+                                .userInfoEndpoint(userInfo -> userInfo
+                                        .userService(customOAuth2UserService)
+                                )
+                        )
+                        .formLogin(form -> form.disable()) // 기본 로그인 폼 비활성화
+                        .httpBasic(httpBasic -> httpBasic.disable()); // Basic Auth 비활성화
+        
+                return http.build();
+            }
+        
+            // ✅ CORS 설정 추가
+            @Bean
+            public CorsConfigurationSource corsConfigurationSource() {
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                CorsConfiguration config = new CorsConfiguration();
+        
+                config.setAllowCredentials(true);
+                config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // ✅ Vue 프론트엔드 허용
+                config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        
+                source.registerCorsConfiguration("/**", config);
+                return source;
+            }
+        }
 
 
 
