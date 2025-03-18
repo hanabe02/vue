@@ -91,7 +91,12 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
         │   ├── UserRepository.java  # JPA 레포지토리
         │   └── application.properties  # 환경 설정
         └── README.md
-        
+
+> **🔹 로그인 DB 정보**  
+> 백엔드에서 가져오기: **CORS(Cross-Origin Resource Sharing) 기술 사용**
+
+> **🔹 CORS란?**  
+> 웹 브라우저에서 다른 도메인(origin)의 리소스를 요청할 때 보안 문제를 해결하기 위한 메커니즘
     > 로그인 DB 정보, 백단에서 가져오기 : CORS(cross-Origin Resource Sharing) 기술 사용
       cors? -> 웹 브라우저에서 다른 도메인(origin)의 리소스를 요청할 때 보안 문제를 해결하기 위한 메커니즘
     
