@@ -74,26 +74,27 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
 ---
 
 ### **추가 구현 : 로그인, 2025년 3월 14일** 
-    - 로그인 : 하드 코딩 부분 -> **Google OAuth 2.0 로그인 적용, 2025년 3월 17일**
-     📦 프로젝트 루트
-        ├── 📂 frontend (Vue.js)
-        │   ├── login.vue  # Google 로그인 버튼
-        │   ├── store.js  # 상태 관리 (Pinia)
-        │   ├── api.js  # API 요청 관리
-        │   └── main.js  # Vue 초기 설정
-        │
-        ├── 📂 backend (Spring Boot)
-        │   ├── SecurityConfig.java  # Spring Security 설정
-        │   ├── CustomOAuth2UserService.java  # OAuth2 로그인 처리
-        │   ├── OAuthAttributes.java  # OAuth2 사용자 정보 변환
-        │   ├── SessionUser.java  # 세션 관리
-        │   ├── Users.java  # 사용자 엔티티
-        │   ├── UserRepository.java  # JPA 레포지토리
-        │   └── application.properties  # 환경 설정
-        └── README.md
+  **수정사항**
+      - 로그인 : 하드 코딩 부분 -> **Google OAuth 2.0 로그인 적용, 2025년 3월 17일**
+       📦 프로젝트 루트
+          ├── 📂 frontend (Vue.js)
+          │   ├── login.vue  # Google 로그인 버튼
+          │   ├── store.js  # 상태 관리 (Pinia)
+          │   ├── api.js  # API 요청 관리
+          │   └── main.js  # Vue 초기 설정
+          │
+          ├── 📂 backend (Spring Boot)
+          │   ├── SecurityConfig.java  # Spring Security 설정
+          │   ├── CustomOAuth2UserService.java  # OAuth2 로그인 처리
+          │   ├── OAuthAttributes.java  # OAuth2 사용자 정보 변환
+          │   ├── SessionUser.java  # 세션 관리
+          │   ├── Users.java  # 사용자 엔티티
+          │   ├── UserRepository.java  # JPA 레포지토리
+          │   └── application.properties  # 환경 설정
+          └── README.md
 
-
-    - 수정사항
+  **수정사항**
+      - 로그인 
 > 웹 브라우저에서 다른 도메인(origin)의 리소스를 요청할 때 보안 문제를 해결하기 위한 메커니즘
     > 로그인 DB 정보, 백단에서 가져오기 : CORS(cross-Origin Resource Sharing) 기술 사용
       cors? -> 웹 브라우저에서 다른 도메인(origin)의 리소스를 요청할 때 보안 문제를 해결하기 위한 메커니즘
