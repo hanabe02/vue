@@ -110,7 +110,7 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
           3. cors는 브라우저에서 발생하는 요청에 대한 보안 정책이기 때문에, 이 경우에는 영향을 받지 않음
             -> 즉 여기서는 요청이 백엔드 내부에서 이루어지기 때문에 브라우저의 CORS 정책이 적용되지 않았던 것
 
-        SecurityCode.java 코드 일부
+### SecurityCode.java 코드 일부
           @Bean
             public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
