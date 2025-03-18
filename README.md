@@ -73,9 +73,8 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
 
 ---
 
-### **추가 구현 : 로그인 부분, 계획 날짜 2025년 3월 14일** 
+### **추가 구현 : 로그인, 2025년 3월 14일** 
     - 로그인 : 하드 코딩 부분 -> **Google OAuth 2.0 로그인 적용, 2025년 3월 17일**
-    
      📦 프로젝트 루트
         ├── 📂 frontend (Vue.js)
         │   ├── login.vue  # Google 로그인 버튼
@@ -92,7 +91,9 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
         │   ├── UserRepository.java  # JPA 레포지토리
         │   └── application.properties  # 환경 설정
         └── README.md
-
+        
+    > 로그인 DB 정보, 백단에서 가져오기 : CORS(cross-Origin Resource Sharing) 기술 사용
+      cors? -> 웹 브라우저에서 다른 도메인(origin)의 리소스를 요청할 때 보안 문제를 해결하기 위한 메커니즘
     
 
 
