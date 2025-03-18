@@ -44,8 +44,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Optional<Users> existingUser = userRepository.findByEmail(attributes.getEmail());
         Users user;
         if (existingUser.isPresent()) {
+            // db 에 이메일 정보가 있는경우 : 데이터를 가져옴
             user = existingUser.get();
         } else {
+            // db에 이메일 정보가 없는 경우 : 데이터 추가
             user = userRepository.save(attributes.toEntity());
         }
 

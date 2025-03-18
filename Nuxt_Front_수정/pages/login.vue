@@ -15,6 +15,7 @@ import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 import { ref } from "vue";
+import { userStore } from '@/store/logi/user'
 
 const { signIn, data: sessionData } = useAuth()
 // useAuth() 함수 Vue 의 composition api 에서 사용되는 composable 함수
@@ -100,33 +101,37 @@ const onSubmit = () => {
     })
 }
 
-const loginWithGoogle = () => {
-    window.location.href = "http://localhost:8282/oauth2/authorization/google";
-
-      setTimeout(async () => {
-    try {
-      const response = await fetch("http://localhost:8282/auth/user", {
-        method: "GET",
-        credentials: "include",
-      });
-      if (!response.ok) throw new Error("사용자 정보를 가져올 수 없음");
-      const userData = await response.json();
-      console.log("✅ 로그인된 사용자:", userData);
-
-      if (userData && userData.token) {
-        // JWT 토큰을 저장 (로컬 스토리지 or 쿠키)
-        useCookie('authToken').value = userData.token;
-        console.log("✅ JWT 저장 완료:", userData.token);
-
-        window.location.href = "http://localhost:3000";
-      } else {
-        console.error("❌ JWT 토큰이 없습니다.");
-      }
-    } catch (error) {
-      console.error("❌ 사용자 정보 가져오기 실패:", error);
-    }
-  }, 3000); // 로그인 후 3초 후 실행 (OAuth 리디렉션 고려)
+const loginWithGoogle = async () => {
+  await userStore().GET_USER_INFO()
 }
+
+// const loginWithGoogle = () => {
+//     window.location.href = "http://localhost:8282/oauth2/authorization/google";
+
+    // setTimeout(async () => {
+    //   try {
+    //     const response = await fetch("http://localhost:8282/auth/user", {
+    //       method: "GET",
+    //       credentials: "include",
+    //     });
+    //     if (!response.ok) throw new Error("사용자 정보를 가져올 수 없음");
+    //     const userData = await response.json();
+    //     console.log("✅ 로그인된 사용자:", userData);
+
+    //     if (userData && userData.token) {
+    //       // JWT 토큰을 저장 (로컬 스토리지 or 쿠키)
+    //       useCookie('authToken').value = userData.token;
+    //       console.log("✅ JWT 저장 완료:", userData.token);
+
+    //       window.location.href = "http://localhost:3000";
+    //     } else {
+    //       console.error("❌ JWT 토큰이 없습니다.");
+    //     }
+    //   } catch (error) {
+    //     console.error("❌ 사용자 정보 가져오기 실패:", error);
+    //   }
+    // }, 3000); // 로그인 후 3초 후 실행 (OAuth 리디렉션 고려)
+// }
 
 </script>
 

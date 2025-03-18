@@ -8,7 +8,7 @@ import { useGenerateImageVariant } from '@core/composable/useGenerateImageVarian
 definePageMeta({
   alias: '/pages/misc/not-authorized',
   layout: 'blank',
-  public: true,
+  public: false,
 
 })
 

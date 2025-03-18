@@ -3,6 +3,7 @@ import { VDataTable } from 'vuetify/labs/VDataTable'
 import WorkPlaceAddModal from './modal/WorkPlaceAddModal.vue'
 import WorkPlaceUpdateModal from './modal/WorkPlaceUpdateModal.vue'
 import { baseStore } from '@/store/logi/base'
+// baseStore -> pinia 의 defineStore 사용한 store 중앙 관리소
 
 const isDialogVisible = ref(false)
 const workplaceInfodata: Ref<any[]> = ref([])

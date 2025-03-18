@@ -275,4 +275,15 @@ export default [
       },
     ],
   },
+  {
+    title: '회원 정보',
+    icon: { icon: 'tabler-user' },
+    children: [
+      {
+        title: '회원 정보 관리',
+        icon: { icon: 'tabler-user', size: '22' },
+        to: {name: 'logistic-user-userProfile-userProfile'}
+      }
+    ]
+  }
 ];
