@@ -161,12 +161,15 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
         }
 
 ### **추가 구현 : 소셜 로그인 로그아웃 구현 : 백단 -> session 초기화, localStorage 초기화, 2025년 3월 19일 **
-    - error : google 로그인 -> /login 창이 한 번 더 뜨는 문제가 발생, 2025년 3월 19일 09:30 ~ 2025년 3월 19일 15:07분 해결
-      nuxt -> 라우트 변경(페이지 이동) 전에 [acl.global.ts] 가 항상 먼저 실행된다.
+    - error : google 로그인 시 -> /login 창이 한 번 더 뜨는 문제가 발생, 2025년 3월 19일 09:30 ~ 2025년 3월 19일 15:07분 해결
+      acl.global.ts 가 auth-callback 라우터 주소 인식을 못하는 문제 때문에 login 주소를 호출하는 문제가 발생
+
+      acl.global.ts 란?
+        😁 nuxt -> 라우트 변경(페이지 이동) 전에 [acl.global.ts] 가 항상 먼저 실행된다.
 
 ### **acl.global.ts 코드 일부**
         console.log("🔍 현재 로그인 상태:", isLoggedIn, "| 이동할 페이지:", to.name);
-      
+        
         // 로그인 버튼 클릭시 백단에서 auth-callback 라우터를 호출하는데 밑에 있는 login 검증 코드에서 걸려서 /login 창을 계속 띄우는 문제가 발생
         // 때문에 auth-callback 라우터 주소를 허용 함으로 써 db 에서 user 의 정보를 가져올 수 있게 해줌
         if (to.name === 'auth-callback') {
@@ -175,10 +178,41 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
         }
 
         // 프로젝트 실행시 로그인이 필요하기 때문에 -> /login 주소로 이동
+        // autu-callback 을 실행하면 locatstorage 에 로그인의 상태가 적용되기 때문에 isLoggedIn 의 결과값이 : true 가 된다.
         if (!isLoggedIn && to.name !== 'login' && process.client) {
           console.log("🚨 로그인 필요! `/login`으로 이동");
           return router.push('/login');
         }
+  ### logout 백단 logout 컨트롤러 추가
+      AuthController.java
+          @PostMapping("/logout")
+          public ResponseEntity<?> logout(HttpSession session) {
+              System.out.println("로그아웃 요청 받음!");
+              session.invalidate(); // 세션 무효화 -> 서버에 저장되어 있는 쿠키를 제거하는 역할을 한다.
+              System.out.println("세션 삭제 완료!");
+              return ResponseEntity.ok().body("Logout successful");
+          }
+  ### logout 앞단 
+      userProfile.vue : 버튼 클릭시 백단의 /logout 실행 + localStorage.removeItem 을 통해 로컬 스토리지 정보 초기화
+        const logout = async () => {
+          console.log("로그아웃 실행 됨");
+          // 1️⃣ 로컬 스토리지에서 userInfo 삭제
+          localStorage.removeItem("userInfo");
+        
+          await fetch("http://localhost:8282/auth/logout",{
+            method: "POST",
+            credentials: "include",
+          });
+        
+          window.location.href = "https://accounts.google.com/logout";
+        
+          // ✅ 4️⃣ 로그아웃 후 로그인 페이지로 이동
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 1000);
+        }
+
+
 
 
 
