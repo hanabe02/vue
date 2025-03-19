@@ -160,5 +160,7 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
             }
         }
 
+### **추가 구현 : 소셜 로그인 로그아웃 구현 : 백단 -> session 초기화, localStorage 초기화, 2025년 3월 19일 **
+    - 코드 구현
 
 
