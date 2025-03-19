@@ -26,12 +26,17 @@ export const userStore = defineStore('userStore', {
 
                 console.log("✅ 로그인된 사용자:", userData);
 
+                // ✅ 사용자 정보를 localStorage에도 저장 (새 창에서도 유지되도록)
+                localStorage.setItem("userInfo", JSON.stringify(userData));
+
                 // ✅ 디버깅: 데이터 확인
                 console.log("🔥 기존 상태 값:", this.userInfo);
                 console.log("🔥 새로운 데이터 값:", userData);
 
                 // ✅ 반응형 업데이트
                 this.userInfo = { ...userData };
+
+                await nextTick();
 
                 // ✅ 사용자 정보를 Pinia Store에 저장
                 console.log("✅ 최종 상태 값:", this.userInfo);
