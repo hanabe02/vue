@@ -1,0 +1,203 @@
+<<<<<<< HEAD
+# --------------------------
+# 🌟 공통적으로 무시할 파일들
+# --------------------------
+
+# Node.js 패키지 폴더 (React)
+node_modules/
+
+# 빌드 결과물 (React & Java)
+dist/
+build/
+
+# OS별 자동 생성 파일 (Mac & Windows)
+.DS_Store
+Thumbs.db
+
+# 로그 파일
+*.log
+
+# --------------------------
+# 🌟 Backend (Spring Boot / Java)
+# --------------------------
+
+# Maven & Gradle 빌드 폴더
+target/
+out/
+bin/
+
+# IDE 설정 파일 (IntelliJ, Eclipse)
+.idea/
+*.iml
+*.iws
+*.ipr
+*.class
+
+# Gradle 캐시 파일
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Lombok 설정 파일 (자동 생성 코드 무시)
+.lombok/
+
+# Spring Boot 환경 변수 파일 (보안 관련)
+# ✅ Git에 올리지 않도록 설정
+# 하지만 개발자가 참고할 수 있도록 `.env.example` 제공 필요
+#application.properties
+#application.yml
+#application-dev.yml
+#application-prod.yml
+
+# 테스트 결과 파일
+TEST*.xml
+*.log
+
+# --------------------------
+# 🌟 Frontend (React)
+# --------------------------
+
+# npm, yarn lock 파일 (불필요한 경우)
+package-lock.json
+yarn.lock
+
+# 빌드 아티팩트 (React)
+node_modules/
+coverage/
+
+# ✅ `.env` 파일은 Git에 포함되지만, `.env.example` 제공 필요
+# 보안 유지 필요시 아래 주석 해제하여 무시 가능
+#.env
+#.env.local
+#.env.production
+#.env.development
+
+# --------------------------
+# 🌟 Git LFS 관리 파일 (대형 파일)
+# --------------------------
+
+# 대용량 미디어 파일 (Git LFS로 관리 권장)
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv
+
+# --------------------------
+# 🌟 기타 불필요한 파일들
+# --------------------------
+
+# Windows 실행 파일
+*.exe
+
+# Mac 애플리케이션 파일
+*.app
+
+# 프로젝트 내 실행 파일 무시
+*.war
+# *.jar
+
+# 사용자별 설정 파일 무시
+.vscode/
+=======
+# --------------------------
+# 🌟 공통적으로 무시할 파일들
+# --------------------------
+
+# Node.js 패키지 폴더 (React)
+node_modules/
+
+# 빌드 결과물 (React & Java)
+dist/
+build/
+
+# OS별 자동 생성 파일 (Mac & Windows)
+.DS_Store
+Thumbs.db
+
+# 로그 파일
+*.log
+
+# --------------------------
+# 🌟 Backend (Spring Boot / Java)
+# --------------------------
+
+# Maven & Gradle 빌드 폴더
+target/
+out/
+bin/
+
+# IDE 설정 파일 (IntelliJ, Eclipse)
+.idea/
+*.iml
+*.iws
+*.ipr
+*.class
+
+# Gradle 캐시 파일
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Lombok 설정 파일 (자동 생성 코드 무시)
+.lombok/
+
+# Spring Boot 환경 변수 파일 (보안 관련)
+# ✅ Git에 올리지 않도록 설정
+# 하지만 개발자가 참고할 수 있도록 `.env.example` 제공 필요
+#application.properties
+#application.yml
+#application-dev.yml
+#application-prod.yml
+
+# 테스트 결과 파일
+TEST*.xml
+*.log
+
+# --------------------------
+# 🌟 Frontend (React)
+# --------------------------
+
+# npm, yarn lock 파일 (불필요한 경우)
+package-lock.json
+yarn.lock
+
+# 빌드 아티팩트 (React)
+node_modules/
+coverage/
+
+# ✅ `.env` 파일은 Git에 포함되지만, `.env.example` 제공 필요
+# 보안 유지 필요시 아래 주석 해제하여 무시 가능
+#.env
+#.env.local
+#.env.production
+#.env.development
+
+# --------------------------
+# 🌟 Git LFS 관리 파일 (대형 파일)
+# --------------------------
+
+# 대용량 미디어 파일 (Git LFS로 관리 권장)
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv
+
+# --------------------------
+# 🌟 기타 불필요한 파일들
+# --------------------------
+
+# Windows 실행 파일
+*.exe
+
+# Mac 애플리케이션 파일
+*.app
+
+# 프로젝트 내 실행 파일 무시
+*.war
+# *.jar
+
+# 사용자별 설정 파일 무시
+.vscode/
+>>>>>>> 6d73844663d6ca1268574f2217d36edf51b493ac

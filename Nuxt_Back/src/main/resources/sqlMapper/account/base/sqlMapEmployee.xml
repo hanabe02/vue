@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.seoulit.erp.logistic.base.dao.EmployeeDAO">
+
+    <!-- EmployeeBasicTO 클래스로 매핑되는 resultMap -->
+    <resultMap id="EmployeeResult" type="kr.co.seoulit.erp.hr.affair.to.EmployeeBasicTO">
+        <result property="companyCode" column="COMPANY_CODE" />
+        <result property="empCode" column="EMP_CODE" />
+        <result property="empName" column="EMP_NAME" />
+        <result property="empEngName" column="EMP_ENG_NAME" />
+        <result property="socialSecurityNumber" column="SOCIAL_SECURITY_NUMBER" />
+        <result property="hireDate" column="HIRE_DATE" />
+        <result property="retirementDate" column="RETIREMENT_DATE" />
+        <result property="userOrNot" column="USER_OR_NOT" />
+        <result property="birthDate" column="BIRTH_DATE" />
+        <result property="gender" column="GENDER" />
+    </resultMap>
+
+    <!-- 회사 코드에 따른 사원 정보를 조회하는 쿼리 -->
+    <select id="getEmployee" resultMap="EmployeeResult">
+        SELECT * FROM EMPLOYEE_BASIC WHERE COMPANY_CODE = #{companyCode}
+    </select>
+
+    <delete id="getEmployeeDelete" parameterType="String">
+        DELETE FROM EMPLOYEE_BASIC WHERE EMP_CODE = #{empCode}
+    </delete>
+
+    <resultMap id="CompanyResult" type="kr.co.seoulit.erp.hr.company.to.CompanyTO">
+        <result property="companyCode" column="COMPANY_CODE"/>
+        <result property="companyName" column="COMPANY_NAME"/>
+        <result property="companyDivision" column="COMPANY_DIVISION"/>
+        <result property="businessLicenseNumber" column="BUSINESS_LICENSE_NUMBER"/>
+        <result property="corporationLicenseNumber" column="CORPORATION_LICENSE_NUMBER"/>
+        <result property="companyCeoName" column="COMPANY_CEO_NAME"/>
+        <result property="companyBusinessConditions" column="COMPANY_BUSINESS_CONDITIONS"/>
+        <result property="companyBusinessItems" column="COMPANY_BUSINESS_ITEMS"/>
+        <result property="companyZipCode" column="COMPANY_ZIP_CODE"/>
+        <result property="companyBasicAddress" column="COMPANY_BASIC_ADDRESS"/>
+        <result property="companyDetailAddress" column="COMPANY_DETAIL_ADDRESS"/>
+        <result property="companyTelNumber" column="COMPANY_TEL_NUMBER"/>
+        <result property="companyFaxNumber" column="COMPANY_FAX_NUMBER"/>
+        <result property="companyEstablishmentDate" column="COMPANY_ESTABLISHMENT_DATE"/>
+        <result property="companyOpenDate" column="COMPANY_OPEN_DATE"/>
+        <result property="homepage" column="HOMEPAGE"/>
+    </resultMap>
+
+
+    <select id="getCompanyInfo" resultMap="CompanyResult">
+        SELECT COMPANY_CODE, COMPANY_NAME FROM COMPANY
+    </select>
+
+    <insert id="getEmployeeAdd" parameterType="kr.co.seoulit.erp.hr.affair.to.EmployeeBasicTO">
+        INSERT INTO EMPLOYEE_BASIC (
+            COMPANY_CODE,
+            EMP_CODE,
+            EMP_NAME,
+            EMP_ENG_NAME,
+            SOCIAL_SECURITY_NUMBER,
+            HIRE_DATE,
+            RETIREMENT_DATE,
+            USER_OR_NOT,
+            BIRTH_DATE,
+            GENDER
+        ) VALUES (
+                     #{companyCode},
+                     #{empCode},
+                     #{empName},
+                     #{empEngName},
+                     #{socialSecurityNumber},
+                     #{hireDate},
+                     #{retirementDate},
+                     #{userOrNot},
+                     #{birthDate},
+                     #{gender}
+                 )
+    </insert>
+
+    <update id="getEmployeeEdit" parameterType="kr.co.seoulit.erp.hr.affair.to.EmployeeBasicTO">
+        UPDATE EMPLOYEE_BASIC
+        SET COMPANY_CODE = #{companyCode},
+            EMP_CODE = #{empCode},
+            EMP_ENG_NAME = #{empEngName},
+            SOCIAL_SECURITY_NUMBER = #{socialSecurityNumber},
+            HIRE_DATE = #{hireDate},
+            RETIREMENT_DATE = #{retirementDate},
+            USER_OR_NOT = #{userOrNot},
+            BIRTH_DATE = #{birthDate},
+            GENDER = #{gender}
+        WHERE EMP_NAME = #{empName}
+    </update>
+</mapper>
