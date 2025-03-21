@@ -235,18 +235,24 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
           }, 1000);
         }
 
-### **추가 구현 : 회원정보 (CLUD) 구현 : 2025년 3월 19일 18:48분 ~ 3월 21일 15:30분
-    사원조회 CLUD 구현
-      - 사원 조회 : select
+# 📌 추가 구현: 회원정보 (CRUD)  
+📅 **구현 기간**: 2025년 3월 19일 18:48 ~ 3월 21일 15:30  
+
+---
+
+## 🚀 사원정보 CRUD 구현 
+
+### 🔍 사원 조회 (Select)  
         [front] 전달한 정보 없음, ex) 조건을 줘야 할 경우 String 형태로 값을 전달, params 형태로 넣어서 전달 가능
         [back] String -> @RequestParam String 값
-      - 사원 추가 : insert
+### 🔍 사원 추가 (insert)  
         [front] select 조회된 정보를 params:{} 에 담아서 -> [back] 전달
-      - 사원 수정 : update
+### 🔍 사원 수정 (update)  
         [front] update 정보 Get 방식 params:{} 형태로 전달 -> [back] @RequestParam Map<String, String> params 형태로 받는다.
-      - 사원 삭제 : Delete
+### 🔍 사원 삭제 (delete)  
         [front] select 정보를 선택 params:{} 에 담아서 -> [back] 전달
 
+## 🚀 Front, Back 코드 
         [front 구조]
           employee.vue : 컴포넌트를 관리하는 최상단 컴포넌트
           empInfo.vue : 사원정보 + 사원 추가, 수정, 사원조회, 삭제 등의 컴포넌트를 관리하는 중단 컴포넌트
