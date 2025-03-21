@@ -213,7 +213,11 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
         }
 
 ### **추가 구현 : 회원정보 (CLUD) 구현 : 2025년 3월 19일 09:48 ~ 진행중
-
+    사원조회 CLUD 구현
+      - 사원 조회 : select
+      - 사원 추가 : insert
+      - 사원 수정 : update
+      - 사원 삭제 : Delete
 
 
 
