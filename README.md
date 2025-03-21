@@ -161,8 +161,10 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
         }
 
 ### **추가 구현 : 소셜 로그인 로그아웃 구현 : 백단 -> session 초기화, localStorage 초기화, 2025년 3월 19일 **
-    - error : google 로그인 시 -> /login 창이 한 번 더 뜨는 문제가 발생, 2025년 3월 19일 09:30 ~ 2025년 3월 19일 15:07분 해결
+    - error 발생 : google 로그인 시 -> /login 창이 한 번 더 뜨는 문제가 발생, 2025년 3월 19일 09:30 ~ 2025년 3월 19일 15:07분 해결
       acl.global.ts 가 auth-callback 라우터 주소 인식을 못하는 문제 때문에 login 주소를 호출하는 문제가 발생
+
+    - error 발생 : cors 오류 때문에 앞단 -> 백단으로 url 요청이 안됨 localhost:3000, localhost:8282 보안 오류 계속 발생 - 2025년 3월 21일 14:53 분 ~ 
 
       acl.global.ts 란?
         😁 nuxt -> 라우트 변경(페이지 이동) 전에 [acl.global.ts] 가 항상 먼저 실행된다.
