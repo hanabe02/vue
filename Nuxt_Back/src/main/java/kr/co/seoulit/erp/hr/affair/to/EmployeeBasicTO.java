@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class EmployeeBasicTO extends BaseTO {
+
 	private String companyCode;
 	private String empCode;
 	private String empName;
@@ -37,5 +38,4 @@ public class EmployeeBasicTO extends BaseTO {
 //	 private List<CareerInfoTO> careerInfoList;
 //	 private List<EducationInfoTO> educationInfoList;
 //	 private List<FamilyInfoTO> familyInfoList;
-
 }
