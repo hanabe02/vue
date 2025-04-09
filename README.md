@@ -285,9 +285,45 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
           sqlMapEmployee.xml
             sql 쿼리가 실행되는 부분
             
-# 📌 추가 구현: AI 출고량 예측 서버 개발 
-  📅 **구현 기간**: 2025년 3월 25일 ~
-
+# 📌 추가 구현: AOP 기술 활용
+ **AOP 를 활용하여 Controller, Service, DTO 파일 명을 들어갈 때 마다. 로그를 띄워 디버깅을 좀더 간편하게 할 수 있게 만들었다.**
+  📅 **구현 기간**: 2025년 4월 09일
+    경로 : common/advice/LoggerAspect
+    package kr.co.seoulit.common.advice;
+    import lombok.extern.slf4j.Slf4j;
+    import org.aspectj.lang.ProceedingJoinPoint;
+    import org.aspectj.lang.annotation.Around;
+    import org.aspectj.lang.annotation.Aspect;
+    import org.springframework.stereotype.Component;
+    //import org.slf4j.Logger;
+    //import org.slf4j.LoggerFactory;
+    @Component
+    @Aspect
+    @Slf4j
+    public class LoggerAspect {
+    	@Around("execution(* kr.co.seoulit.erp..controller..*(..)) || execution(* kr.co.seoulit.erp..servicefacade..*(..)) || execution(* kr.co.seoulit.erp..dao..*(..))")
+    	public Object logPrint(ProceedingJoinPoint joinPoint) throws Throwable {
+    		String layer = "";
+    		String className = joinPoint.getSignature().getDeclaringTypeName();
+    		String methodName = joinPoint.getSignature().getName();
+    
+    		if (className.contains(".controller")) {
+    			layer = "[CONTROLLER]";
+    		} else if (className.contains(".servicefacade")) {
+    			layer = "[SERVICE]";
+    		} else if (className.contains(".dao")) {
+    			layer = "[DAO]";
+    		} else {
+    			layer = "[UNKNOWN]";
+    		}
+    		log.info("{} {}.{}()", layer, className, methodName);
+    		return joinPoint.proceed();
+    	}
+    }
+    
+# 📌 추가 구현: 수주등록, 트랜잭션 처리 -> 현재 코드는 트랜잭션으로 묶음 처리를 하지 않아 
+  테이블 insert 시 오류가 나면 DB 흐름이 꼬일 수 있기 때문에 변경
+  📅 **구현 기간**: 2025년 4월 09일 09: 17 ~  
 
 
 
