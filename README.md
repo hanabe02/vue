@@ -286,8 +286,8 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
             sql 쿼리가 실행되는 부분
             
 # 📌 추가 구현: AOP 기술 활용
- **AOP 를 활용하여 Controller, Service, DTO 파일 명을 들어갈 때 마다. 로그를 띄워 디버깅을 좀더 간편하게 할 수 있게 만들었다.**
-  📅 **구현 기간**: 2025년 4월 09일
+### AOP 를 활용하여 Controller, Service, DTO 파일 명을 들어갈 때 마다. 로그를 띄워 디버깅을 좀더 간편하게 할 수 있게 만들었다.
+    📅 구현 기간 : 2025년 4월 09일
     경로 : common/advice/LoggerAspect
     package kr.co.seoulit.common.advice;
     import lombok.extern.slf4j.Slf4j;
