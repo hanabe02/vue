@@ -73,7 +73,7 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
 
 ---
 
-### **추가 구현 : 로그인, 2025년 3월 14일 ~ 2025년 3월 17일** 
+### **추가 구현 : 로그인** 
       - 로그인 : 하드 코딩 부분 -> **Google OAuth 2.0 로그인 적용**
        📦 프로젝트 루트
           ├── 📂 frontend (Vue.js)
@@ -92,7 +92,7 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
           │   └── application.properties  # 환경 설정
           └── README.md
 
-### **추가 구현 : 백에서 프론트 url 요청, db 데이터 가져오기 2025년 3월 18일 **
+### **추가 구현 : 백에서 프론트 url 요청, db 데이터 가져오기 **
       - 로그인 DB 정보, 백단에서 가져오기 : CORS(cross Origin Resource Sharing) 기술 사용
         cors? -> 웹 브라우저에서 다른 도메인(origin)의 리소스를 요청할 때 보안 문제를 해결하기 위한 메커니즘
 
@@ -160,14 +160,14 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
             }
         }
 
-### **추가 구현 : 소셜 로그인 로그아웃 구현 : 백단 -> session 초기화, localStorage 초기화, 2025년 3월 19일 **
-    - error 발생 : google 로그인 시 -> /login 창이 한 번 더 뜨는 문제가 발생, 2025년 3월 19일 09:30 ~ 2025년 3월 19일 15:07분 해결
+### **추가 구현 : 소셜 로그인 로그아웃 구현 : 백단 -> session 초기화, localStorage 초기화, **
+    - error 발생 : google 로그인 시 -> /login 창이 한 번 더 뜨는 문제가 발생, 
       acl.global.ts 가 auth-callback 라우터 주소 인식을 못하는 문제 때문에 login 주소를 호출하는 문제가 발생
       
       acl.global.ts 란?
         😁 nuxt -> 라우트 변경(페이지 이동) 전에 [acl.global.ts] 가 항상 먼저 실행된다.
 
-    - error 발생 : cors 오류 때문에 앞단 -> 백단으로 url 요청이 안됨 localhost:3000, localhost:8282 보안 오류 계속 발생 - 2025년 3월 21일 14:53 분 ~ 2025년 3월 21일 15:19 분
+    - error 발생 : cors 오류 때문에 앞단 -> 백단으로 url 요청이 안됨 localhost:3000, localhost:8282 보안 오류 계속 발생 
       : 🫤 CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
       
       cors 오류 발생 => 백엔드가 인증을 요구하고 있다는 뜻, 
@@ -236,8 +236,7 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
           }, 1000);
         }
 
-# 📌 추가 구현: 회원정보 (CRUD)  
-📅 **구현 기간**: 2025년 3월 19일 18:48 ~ 3월 21일 15:30  
+# 📌 추가 구현: 회원정보 (CRUD)    
 
 ---
 
@@ -287,7 +286,6 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
             
 # 📌 추가 구현: AOP 기술 활용
 ### AOP 를 활용하여 Controller, Service, DTO 파일 명을 들어갈 때 마다. 로그를 띄워 디버깅을 좀더 간편하게 할 수 있게 만들었다.
-    📅 구현 기간 : 2025년 4월 09일 
     백엔드 : Spring boot 수정
     
     경로 : common/advice/LoggerAspect
