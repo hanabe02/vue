@@ -1,1 +1,0 @@
-import{H as o}from"./entry.0516b5e8.js";const m=o("emp",{state:()=>({empCode:""}),actions:{loadEmpCode(){this.empCode=localStorage.getItem("empCode")||""},setEmpCode(e){this.empCode=e,localStorage.setItem("empCode",e)},clearEmpCode(){this.empCode="",localStorage.removeItem("empCode")}}});export{m as u};
