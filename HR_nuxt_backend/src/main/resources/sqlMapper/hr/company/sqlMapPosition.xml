@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.company.dao.PositionDAO">
+
+   <resultMap id="positionResult" type="positionTO">
+      <result property="workplaceCode" column="WORKPLACE_CODE"  />
+      <result property="deptCode" column="DEPT_CODE"  />
+      <result property="positionCode" column="POSITION_CODE"  />
+      <result property="positionName" column="POSITION_NAME"  />
+      <result property="description" column="DESCRIPTION"  />
+      <result property="baseSalary" column="BASE_SALARY"  />
+      <result property="hobongRatio" column="HOBONG_RATIO"  />
+
+   </resultMap>
+
+   <select id="selectPositionList" resultMap="positionResult">
+      SELECT DISTINCT * FROM POSITION ORDER BY POSITION_CODE
+   </select>
+
+   <delete id="deletePosition" parameterType="String">
+   		<![CDATA[
+   			DELETE FROM POSITION
+   			WHERE DEPT_CODE = #{deptCode}
+   		]]>
+   </delete>
+
+</mapper>

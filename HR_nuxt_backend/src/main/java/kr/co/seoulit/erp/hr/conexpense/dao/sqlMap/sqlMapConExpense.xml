@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.conexpense.dao.ConExpenseDAO">
+
+    <!-- 경조비 신청 내역 전체 조회 -->
+    <select id="getAllConExpenseList" resultType="kr.co.seoulit.erp.hr.conexpense.to.ConExpenseTO">
+        SELECT *
+        FROM CON_EXPENSE
+    </select>
+
+    <!--경조비 신청(출력) : 신청번호, 신청자(사원명), 신청일자, 경조구분, 대상자, 경조기간, 경조금액 -->
+    <!--경조비 신청(입력) : 사원번호, 사원명 -->
+    <select id="selectConExpenseList" parameterType="map" resultType="kr.co.seoulit.erp.hr.conexpense.to.ConExpenseTO">
+        SELECT c.REQ_NUM,
+        c.EMP_CODE,
+        c.EMP_NAME,
+        c.REQ_DATE,
+        c.CON_TYPE,
+        c.TRGT,
+        c.CON_TERM_START,
+        c.CON_TERM_END,
+        c.CON_AMT,
+        c.REL,
+        c.CON_PLACE,
+        c.BANK,
+        c.ACC_NUM,
+        c.ACC_HOLDER,
+        c.NOTE
+        FROM CON_EXPENSE c
+        <where>
+            <if test="startDate != null and endDate != null">
+                c.REQ_DATE BETWEEN #{startDate} AND #{endDate}
+            </if>
+            <if test="'undefined'.equals(searchEmpCode)">
+                AND c.EMP_CODE LIKE '%'
+            </if>
+        </where>
+        ORDER BY c.REQ_NUM
+    </select>
+
+    <!-- 신청(입력) -->
+    <insert id="insertConExpense" parameterType="kr.co.seoulit.erp.hr.conexpense.to.ConExpenseTO">
+        INSERT INTO CON_EXPENSE(REQ_NUM, EMP_CODE, EMP_NAME, REQ_DATE, CON_TYPE, TRGT, CON_TERM_START, CON_TERM_END,
+                                CON_AMT, REL, CON_PLACE, BANK, ACC_NUM, ACC_HOLDER, NOTE)
+        VALUES (#{reqNum}, #{empCode}, #{empName}, #{reqDate},
+                #{conType}, #{trgt}, #{conTermStart}, #{conTermEnd},
+                #{conAmt}, #{rel}, #{conPlace}, #{bank}, #{accNum}, #{accHolder}, #{note})
+    </insert>
+
+    <!-- 수정 -->
+    <update id="updateConExpense" parameterType="kr.co.seoulit.erp.hr.conexpense.to.ConExpenseTO">
+        UPDATE CON_EXPENSE
+        SET REQ_NUM        = #{reqNum},
+            EMP_CODE       = #{empCode},
+            EMP_NAME       = #{empName},
+            REQ_DATE       = #{reqDate},
+            CON_TYPE       = #{conType},
+            TRGT           = #{trgt},
+            CON_TERM_START = #{conTermStart},
+            CON_TERM_END   = #{conTermEnd},
+            CON_AMT        = #{conAmt},
+            REL            = #{rel},
+            CON_PLACE      = #{conPlace},
+            BANK           = #{bank},
+            ACC_NUM        = #{accNum},
+            ACC_HOLDER     = #{accHolder},
+            NOTE           = #{note}
+        WHERE EMP_CODE = #{empCode}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="deleteConExpense" parameterType="String">
+        DELETE
+        FROM CON_EXPENSE
+        WHERE EMP_CODE = #{empCode}
+    </delete>
+
+</mapper>

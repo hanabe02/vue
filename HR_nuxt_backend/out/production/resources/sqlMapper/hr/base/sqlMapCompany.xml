@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.seoulit.erp.hr.base.dao.CompanyListDAO">
+
+
+		<resultMap type="kr.co.seoulit.erp.hr.company.to.CompanyTO" id="companyResult">
+			<result property="companyCode" column="COMPANY_CODE" />
+			<result property="companyName" column="COMPANY_NAME" />
+			</resultMap>
+
+		<select id="findCompanyList" resultMap="companyResult">
+			SELECT COMPANY_CODE, COMPANY_NAME
+			FROM COMPANY
+		</select>
+</mapper>

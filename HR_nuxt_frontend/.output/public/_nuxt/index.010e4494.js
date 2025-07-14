@@ -1,0 +1,1 @@
+import{a as r}from"./axios.28bc18a3.js";function o(t){return t.interceptors.request.use(e=>e,e=>Promise.reject(e)),t.interceptors.response.use(e=>e,e=>Promise.reject(e)),t}function s(t){const e=r.create({baseURL:`http://localhost:8282${t}`});return o(e)}const n=s("/hr"),a=s("/sys");export{n as h,a as s};

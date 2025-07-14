@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.education.dao.EduDAO">
+
+    <insert id="requestEduList" parameterType="kr.co.seoulit.erp.hr.education.to.EduTO">
+        INSERT INTO EDU
+        (
+            EDU_CODE,
+            EDU_NAME,
+            EMP_CODE,
+            EMP_NAME,
+            DEPT_CODE,
+            DEPT_NAME,
+            EDU_HISTORY,
+            SEARCH_YEAR,
+            STATUS
+        )
+        VALUES (
+                   #{eduCode},
+                   #{eduName},
+                   #{empCode},
+                   #{empName},
+                   #{deptCode},
+                   #{deptName},
+                   #{eduHistory},
+                   #{searchYear},
+                   #{status}
+               )
+    </insert>
+
+    <insert id="addEduList" parameterType="kr.co.seoulit.erp.hr.education.to.EduTO">
+        INSERT INTO EDU_LIST
+        (
+         EDU_CODE,
+         EDU_NAME,
+         START_DATE,
+         END_DATE,
+         DESCRIPTION,
+         OPEN_DATE
+        )
+        VALUES (
+         #{eduCode},
+         #{eduName},
+         #{startDate},
+         #{endDate},
+         #{description},
+         #{openDate}
+         )
+    </insert>
+
+    <select id="getEduCodeByEduName" parameterType="string" resultType="string">
+        SELECT EDU_CODE FROM EDU WHERE EDU_NAME = #{eduName}
+    </select>
+
+<!--    <update id="updateEduNameSeq" parameterType="string">-->
+<!--        MERGE INTO EDU_NAME_SEQ target-->
+<!--            USING (SELECT #{eduName} AS EDU_NAME FROM DUAL) src-->
+<!--            ON (target.EDU_NAME = src.EDU_NAME)-->
+<!--            WHEN MATCHED THEN-->
+<!--                UPDATE SET target.LAST_SEQ = target.LAST_SEQ + 1-->
+<!--            WHEN NOT MATCHED THEN-->
+<!--                INSERT (EDU_NAME, LAST_SEQ) VALUES (#{eduName}, 1)-->
+<!--    </update>-->
+
+<!--    <select id="getEduNameSeq" resultType="int" parameterType="string">-->
+<!--        SELECT LAST_SEQ FROM EDU_NAME_SEQ WHERE EDU_NAME = #{eduName}-->
+<!--    </select>-->
+
+    <select id="getEduListByEduName" parameterType="String" resultType="kr.co.seoulit.erp.hr.education.to.EduTO">
+        SELECT * FROM EDU_LIST WHERE EDU_NAME = #{eduName}
+    </select>
+
+    <select id="getNextEduCodeSequence" resultType="int">
+        SELECT EDU_SEQ.NEXTVAL FROM DUAL
+    </select>
+
+    <resultMap id="getEmpInfoData" type="kr.co.seoulit.erp.hr.education.to.EduTO">
+        <result property="eduCode" column="EDU_CODE"/>
+        <result property="eduName" column="EDU_NAME"/>
+        <result property="empCode" column="EMP_CODE"/>
+        <result property="empName" column="EMP_NAME"/>
+        <result property="deptCode" column="DEPT_CODE"/>
+        <result property="deptName" column="DEPT_NAME"/>
+        <result property="eduHistory" column="EDU_HISTORY"/>
+        <result property="searchYear" column="SEARCH_YEAR"/>
+        <result property="status" column="STATUS"/>
+    </resultMap>
+
+    <select id="getEmpInfo" parameterType="kr.co.seoulit.erp.hr.education.to.EduTO" resultMap="getEmpInfoData">
+        SELECT EB.EMP_CODE, EB.EMP_NAME, D.DEPT_CODE, D.DEPT_NAME
+        FROM EMPLOYEE_BASIC EB, DEPARTMENT D
+        WHERE EB.DEPT_CODE = D.DEPT_CODE
+        AND EB.EMP_CODE = #{empCode}
+    </select>
+
+    <select id="selEduNameList" parameterType="kr.co.seoulit.erp.hr.education.to.EduTO" resultType="kr.co.seoulit.erp.hr.education.to.EduTO">
+        SELECT DISTINCT EDU_NAME
+        FROM EDU_LIST
+        ORDER BY EDU_NAME
+    </select>
+
+    <parameterMap type="kr.co.seoulit.erp.hr.education.to.EduTO" id="approveEdu">
+        <parameter property="eduCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        <parameter property="searchYear" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        <parameter property="status" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    </parameterMap>
+
+    <update id="approReqEdu"  parameterMap="approveEdu">
+        UPDATE EDU
+        SET
+            STATUS = #{status}
+            WHERE EDU_CODE = #{eduCode}
+            AND SEARCH_YEAR = #{searchYear}
+        </update>
+
+    <resultMap id="selEduResult" type="kr.co.seoulit.erp.hr.education.to.EduTO">
+        <result property="eduCode" column="EDU_CODE"/>
+        <result property="eduName" column="EDU_NAME"/>
+        <result property="empCode" column="EMP_CODE"/>
+        <result property="empName" column="EMP_NAME"/>
+        <result property="deptCode" column="DEPT_CODE"/>
+        <result property="deptName" column="DEPT_NAME"/>
+        <result property="eduHistory" column="EDU_HISTORY"/>
+        <result property="searchYear" column="SEARCH_YEAR"/>
+        <result property="status" column="STATUS"/>
+    </resultMap>
+
+    <select id="selEdu" parameterType="map" resultMap="selEduResult">
+        SELECT
+            EDU_CODE, EDU_NAME, EMP_CODE, EMP_NAME,
+            DEPT_CODE, DEPT_NAME, EDU_HISTORY, SEARCH_YEAR, STATUS
+        FROM
+            EDU
+        WHERE STATUS IN(#{status}, '신청취소', '반려')
+          AND SEARCH_YEAR BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+    </select>
+
+    <delete id="delEdu" parameterType="kr.co.seoulit.erp.hr.education.to.EduTO">
+        DELETE FROM EDU
+               WHERE SEARCH_YEAR = #{searchYear}
+               AND EDU_CODE = #{eduCode}
+               AND EMP_CODE = #{empCode}
+               AND STATUS = #{status}
+    </delete>
+
+    <select id="selectAllEduList" resultMap="selEduResult">
+        SELECT
+            EDU_CODE, EDU_NAME, EMP_CODE, EMP_NAME,
+            DEPT_CODE, DEPT_NAME, EDU_HISTORY, SEARCH_YEAR, STATUS
+        FROM EDU
+        ORDER BY SEARCH_YEAR DESC, EDU_CODE
+    </select>
+
+    <update id="delReqEdu" parameterType="kr.co.seoulit.erp.hr.education.to.EduTO">
+        UPDATE EDU SET STATUS = '신청취소'
+        WHERE SEARCH_YEAR = #{searchYear}
+          AND EDU_CODE = #{eduCode}
+          AND EMP_CODE = #{empCode}
+          AND STATUS = #{status}
+    </update>
+
+    <update id="checkEduHistory" parameterType="kr.co.seoulit.erp.hr.education.to.EduTO">
+        UPDATE EDU SET EDU_HISTORY = #{eduHistory}
+        WHERE EDU_CODE = #{eduCode}
+        AND EMP_CODE = #{empCode}
+    </update>
+
+    <resultMap id="findApproEduResult" type="kr.co.seoulit.erp.hr.education.to.EduTO">
+        <result property="eduCode" column="EDU_CODE"/>
+        <result property="eduName" column="EDU_NAME"/>
+        <result property="empCode" column="EMP_CODE"/>
+        <result property="empName" column="EMP_NAME"/>
+        <result property="deptCode" column="DEPT_CODE"/>
+        <result property="deptName" column="DEPT_NAME"/>
+        <result property="eduHistory" column="EDU_HISTORY"/>
+        <result property="searchYear" column="SEARCH_YEAR"/>
+        <result property="status" column="STATUS"/>
+        <result property="rejectCause" column="REJECT_CAUSE"/>
+        <result property="etc" column="ETC"/>
+    </resultMap>
+
+    <select id="findApproEdu" parameterType="map" resultMap="findApproEduResult">
+        SELECT
+            *
+        FROM EDU E
+        WHERE
+            E.EMP_CODE = #{empCode}
+          AND E.DEPT_NAME = #{deptName}
+          AND E.SEARCH_YEAR BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD') AND TO_DATE(#{endDate},'YYYY-MM-DD')
+    </select>
+
+    <update id="modifyApproEdu" parameterType="map">
+		<![CDATA[
+        UPDATE EDU
+        SET	STATUS=#{status},  REJECT_CAUSE=#{rejectCause}
+        WHERE EDU_CODE = #{eduCode}
+        AND DEPT_CODE = #{deptCode}
+        AND EMP_CODE = #{empCode}
+        ]]>
+	</update>
+
+    <update id="upgradeDate" parameterType="String">
+        UPDATE EDU
+        SET ETC = TO_CHAR(SYSDATE, 'YYYY-MM-DD') || ' 교육이수 증명서 출력'
+        WHERE EDU_CODE = #{eduCode}
+    </update>
+
+    <select id="printCertificate" parameterType="String" resultType="kr.co.seoulit.erp.hr.education.to.PrintEduTO">
+        SELECT DISTINCT E.EDU_CODE, B.EMP_CODE, B.EMP_NAME, B.GENDER, S.SOCIAL_SECURITY_NUMBER, D.PHONE_NUMBER,
+                        D.BASIC_ADDRESS, (SELECT (COUNT(*) + 1) FROM FAMILY_INFO WHERE EMP_CODE = B.EMP_CODE) AS NUMBER_OF_FAMILY,
+                        DE.DEPT_NAME, P.POSITION_NAME, B.HIRE_DATE, B.RETIREMENT_DATE, D.LEVEL_OF_EDUCATION,
+                        E.EDU_NAME, E.EMP_CODE, E.DEPT_CODE, E.DEPT_NAME, E.EDU_HISTORY, E.STATUS, E.REJECT_CAUSE, E.ETC
+        FROM EDU E, EMPLOYEE_BASIC B, EMPLOYEE_DETAIL D, EMPLOYEE_SECRET S, POSITION P, DEPARTMENT DE
+        WHERE 1=1
+          AND E.EMP_CODE=B.EMP_CODE
+          AND B.EMP_CODE=D.EMP_CODE
+          AND B.EMP_CODE=S.EMP_CODE
+          AND D.POSITION_CODE=P.POSITION_CODE
+          AND B.DEPT_CODE=DE.DEPT_CODE
+          AND E.EDU_CODE=#{eduCode}
+          AND E.STATUS = '승인완료'
+    </select>
+</mapper>

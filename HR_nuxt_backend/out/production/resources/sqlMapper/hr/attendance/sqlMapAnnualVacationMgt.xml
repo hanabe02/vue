@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.attendance.dao.AnnualVacationDAO">
+
+   <resultMap id="annualVacationMgtResult" type="kr.co.seoulit.erp.hr.attendance.to.AnnualVacationMgtTO">
+      <result property="empCode" column="EMP_CODE" />
+      <result property="empName" column="EMP_NAME" />
+      <result property="applyYearMonth" column="APPLY_YEAR_MONTH" />
+      <result property="afternoonOff" column="AFTERNOON_OFF" />
+      <result property="monthlyLeave" column="MONTHLY_LEAVE" />
+      <result property="remainingHoliday" column="REMAINING_HOLIDAY" />
+      <result property="finalizeStatus" column="FINALIZE_STATUS" />
+   </resultMap>
+
+   <select id="findAnnualVactionMgtListByYear" resultMap="annualVacationMgtResult">
+      <![CDATA[
+      SELECT A.*, B.EMP_NAME AS EMP_NAME
+      FROM ANNUAL_VACATION_MANAGE A
+              INNER JOIN EMPLOYEE_BASIC B ON A.EMP_CODE = B.EMP_CODE
+      WHERE A.EMP_CODE = #{empCode}
+        AND A.APPLY_YEAR_MONTH = #{year}
+      ]]>
+   </select>
+
+
+<!--   <select id="findAnnualVactionMgtListByYear" resultMap="annualVacationMgtResult">-->
+<!--      <![CDATA[-->
+<!--      SELECT *-->
+<!--      FROM ANNUAL_VACATION_MANAGE-->
+<!--      WHERE EMP_CODE = #{empCode}-->
+<!--        AND APPLY_YEAR_MONTH IN (SELECT MAX(APPLY_YEAR_MONTH)-->
+<!--                                 FROM ANNUAL_VACATION_MANAGE-->
+<!--                                 WHERE EMP_CODE = #{empCode}-->
+<!--                                   AND EXTRACT(YEAR FROM TO_DATE(APPLY_YEAR_MONTH, 'YYYYMM')) = #{year})-->
+<!--      ]]>-->
+<!--   </select>-->
+
+
+   <parameterMap type="map" id="annualVacationMgtParameter" >
+      <parameter property="applyYearMonth" mode="IN" />
+      <parameter property="result" jdbcType="CURSOR" javaType="java.sql.ResultSet" mode="OUT" resultMap="annualVacationMgtResult"/>
+      <parameter property="errorCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT" />
+      <parameter property="errorMsg" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT" />
+   </parameterMap>
+   <select id="batchAnnualVacationMgtProcess" statementType="CALLABLE" parameterMap="annualVacationMgtParameter">
+      <![CDATA[
+           {call P_HR_VACATION.P_CREATE_ANNUAL_VACATION(?,?,?,?)}
+       ]]>
+   </select>
+
+   <update id="updateAnnualVacationMgtList" parameterType="kr.co.seoulit.erp.hr.attendance.to.AnnualVacationMgtTO">
+      UPDATE ANNUAL_VACATION_MANAGE SET
+         FINALIZE_STATUS = #{finalizeStatus}
+      WHERE EMP_CODE = #{empCode}
+        AND APPLY_YEAR_MONTH = #{applyYearMonth}
+   </update>
+
+   <update id="updateAnnualVacationList" parameterType="kr.co.seoulit.erp.hr.attendance.to.AnnualVacationMgtTO">
+      UPDATE ANNUAL_VACATION
+      SET remain_vacation = #{remainingHoliday}
+      WHERE EMP_CODE = #{empCode}
+      AND year = #{applyYearMonth}
+   </update>
+
+   <update id="cancelAnnualVacationMgtList" parameterType="kr.co.seoulit.erp.hr.attendance.to.AnnualVacationMgtTO">
+      UPDATE ANNUAL_VACATION_MANAGE
+      SET FINALIZE_STATUS = #{finalizeStatus}
+      ,REMAINING_HOLIDAY = #{remainingHoliday}
+      WHERE EMP_CODE = #{empCode}
+      AND APPLY_YEAR_MONTH = #{applyYearMonth}
+   </update>
+
+   <update id="cancelAnnualVacationList" parameterType="kr.co.seoulit.erp.hr.attendance.to.AnnualVacationMgtTO">
+      UPDATE ANNUAL_VACATION
+      SET remain_vacation = #{remainingHoliday}
+      WHERE EMP_CODE = #{empCode}
+      AND year = #{applyYearMonth}
+   </update>
+
+</mapper>

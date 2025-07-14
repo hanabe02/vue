@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.salary.dao.BonusDAO">
+	
+	<resultMap type="kr.co.seoulit.erp.hr.salary.to.BonusTO" id="bonusResult">
+		<result property="empCode" column="EMP_CODE" />
+		<result property="applyYearMonth" column="APPLY_YEAR_MONTH" />
+		<result property="bonus" column="BONUS" />
+		<result property="bonusCode" column="BONUS_CODE" />
+		<result property="finalizeStatus" column="FINALIZE_STATUS" />
+		<result property="empName" column="EMP_NAME" />
+		<result property="detailCodeName" column="DETAIL_CODE_NAME" />
+	</resultMap>
+	
+	<select id="selectBonus" parameterType="kr.co.seoulit.erp.hr.salary.to.BonusTO" resultMap="bonusResult">
+		SELECT * 
+		FROM BONUS
+		WHERE EMP_CODE = #{empCode}
+		AND APPLY_YEAR_MONTH = #{applyYearMonth}
+	</select>
+	
+	
+	<delete id="deleteAllBonus" parameterType="kr.co.seoulit.erp.hr.salary.to.BonusTO">
+		DELETE FROM BONUS
+	</delete>
+	
+	<delete id="deleteBonus" parameterType="kr.co.seoulit.erp.hr.salary.to.BonusTO">
+		DELETE FROM BONUS
+		WHERE EMP_CODE = #{empCode}
+		AND APPLY_YEAR_MONTH = #{applyYearMonth}
+		AND BONUS_CODE = #{bonusCode}
+	</delete>
+	
+	<update id="approveBonus" parameterType="kr.co.seoulit.erp.hr.salary.to.BonusTO">
+		<![CDATA[
+		UPDATE BONUS SET
+			FINALIZE_STATUS = 'Y'
+			WHERE APPLY_YEAR_MONTH = #{applyYearMonth}
+			AND EMP_CODE = #{empCode}
+		]]>
+	</update>
+	
+	<select id="selectBonusList" parameterType="kr.co.seoulit.erp.hr.salary.to.BonusTO" resultMap="bonusResult">
+		<![CDATA[
+			SELECT B.APPLY_YEAR_MONTH, EB.EMP_NAME, B.BONUS ,D.DETAIL_CODE_NAME, B.FINALIZE_STATUS,B.EMP_CODE
+			FROM BONUS B, EMPLOYEE_BASIC EB, CODE_DETAIL D
+			WHERE B.APPLY_YEAR_MONTH LIKE #{applyYearMonth}
+			AND EB.EMP_CODE LIKE #{empCode}
+			AND D.DETAIL_CODE_NAME LIKE #{detailCodeName}
+			AND B.FINALIZE_STATUS LIKE #{finalizeStatus}
+			AND EB.EMP_CODE = B.EMP_CODE
+			AND D.DETAIL_CODE_NUMBER = B.BONUS_CODE 
+			ORDER BY EB.EMP_CODE
+		]]>
+	</select>
+	
+	<insert id="insertBonus" parameterType="kr.co.seoulit.erp.hr.salary.to.BonusTO">
+		INSERT INTO BONUS VALUES(
+		#{empCode}, 
+		#{applyYearMonth}, 
+		#{bonus},
+		#{bonusCode},
+		#{finalizeStatus}
+		)
+	</insert>
+</mapper>

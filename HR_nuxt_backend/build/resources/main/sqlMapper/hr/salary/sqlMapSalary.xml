@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.salary.dao.MonthSalaryDAO">
+	
+	<resultMap type="kr.co.seoulit.erp.hr.salary.to.MonthSalaryTO" id="monthSalaryResult">
+		<result property="empCode" column="EMP_CODE" />
+		<result property="applyYearMonth" column="APPLY_YEAR_MONTH" />
+		<result property="deptCode" column="DEPT_CODE" />
+		<result property="salary" column="BASIC_SALARY" />
+		<result property="totalExtSal" column="TOTAL_EXT_SAL" />
+		<result property="totalPayment" column="TOTAL_PAYMENT" />
+		<result property="totalDeduction" column="TOTAL_DEDUCTION" />
+		<result property="realSalary" column="REAL_SALARY" />
+		<result property="bonus" column="BONUS" />
+		<result property="mealAllowance" column="MEAL_ALLOWANCE" />
+		<result property="ownerCarSub" column="OWNER_CAR_SUB" />
+		<result property="totalTaxSal" column="TOTAL_TAX_SAL" />
+		<result property="finalizeStatus" column="FINALIZE_STATUS" />
+	</resultMap>
+
+	<parameterMap type="map" id="monthSalaryParameter" >
+      <parameter property="applyYearMonth" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+      <parameter property="empCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+      <parameter property="result" jdbcType="CURSOR" javaType="java.sql.ResultSet" mode="OUT"  resultMap="monthSalaryResult"/>
+      <parameter property="errorCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT" />
+      <parameter property="errorMsg" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT" />
+   </parameterMap>   
+   
+   
+   <parameterMap type="map" id="closeMonthSalaryParameter" >
+      <parameter property="applyYearMonth" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+      <parameter property="deptCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+      <parameter property="result" jdbcType="CURSOR" javaType="java.sql.ResultSet" mode="OUT" resultMap="monthSalaryResult"/>
+      <parameter property="errorCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT" />
+      <parameter property="errorMsg" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT" />
+   </parameterMap> 
+   	
+	<select id="batchMonthSalaryProcess" statementType="CALLABLE" parameterMap="monthSalaryParameter" >
+		<![CDATA[
+        {call P_HR_SALARY.P_CREATE_MONTH_SALARY(?,?,?,?,?) }
+    	]]>	
+	</select>
+	
+	<select id="findMonthSalaryProcess" statementType="CALLABLE" parameterMap="closeMonthSalaryParameter">
+	<![CDATA[
+        {call P_HR_SALARY.P_COMPUTE_MONTH_SALARY(?,?,?,?,?) }
+    		]]>	
+	</select>
+
+
+	<!-- <select id="selectMonthSalary" resultMap="monthSalaryResult">
+		SELECT EMP_CODE
+		, APPLY_YEAR_MONTH
+		, SALARY
+		, TOTAL_EXT_SAL
+		, TOTAL_PAYMENT
+		, TOTAL_DEDUCTION
+		, REAR_SALARY
+		, BONUS
+		, UNUSED_DAY_SALARY
+		, FUANALIZE_STATUS
+		FROM MONTH_SALARY 
+		WHERE APPLY_YEAR_MONTH = #{applyYearMonth}
+		AND EMP_CODE = #{empCode}
+	</select> -->
+
+	
+	<select id="selectYearSalary" resultMap="monthSalaryResult" parameterType="map">
+		<![CDATA[
+		SELECT EMP_CODE
+		APPLY_YEAR_MONTH
+		, SALARY
+		, TOTAL_EXT_SAL
+		, TOTAL_PAYMENT
+		, TOTAL_DEDUCTION
+		, REAL_SALARY
+		, BONUS
+		, UNUSED_DAY_SALARY
+		, FINALIZE_STATUS
+		FROM MONTH_SALARY 
+		WHERE APPLY_YEAR_MONTH LIKE #{applyYear}
+		AND EMP_CODE = #{empCode}
+		AND FINALIZE_STATUS = 'Y' 
+		]]>
+	</select>
+
+
+	
+
+	
+	<select id="selectMonthSalayInit" parameterType="kr.co.seoulit.erp.hr.salary.to.MonthSalaryTO" resultMap="monthSalaryResult">
+		<![CDATA[
+		SELECT B.EMP_CODE,
+			B.EMP_NAME,
+			B.DEPT_CODE,
+			NVL(S.REAL_SALARY,0) AS REAL_SALARY,
+			S.APPLY_YEAR_MONTH,
+			S.BASIC_SALARY,
+			S.TOTAL_EXT_SAL,
+			S.TOTAL_DEDUCTION,
+			S.TOTAL_PAYMENT,
+			S.BONUS,
+			S.FINALIZE_STATUS,
+			S.MEAL_ALLOWANCE, 
+			S.OWNER_CAR_SUB,
+			S.TOTAL_TAX_SAL
+				FROM EMPLOYEE_BASIC B,
+					(
+					SELECT EMP_CODE,
+						APPLY_YEAR_MONTH,
+						BASIC_SALARY,
+						TOTAL_EXT_SAL,
+						TOTAL_DEDUCTION,
+						TOTAL_PAYMENT,
+						BONUS,
+						DEPT_CODE,
+						NVL(REAL_SALARY,0) AS REAL_SALARY,
+						FINALIZE_STATUS,
+						MEAL_ALLOWANCE, 
+						OWNER_CAR_SUB,
+						TOTAL_TAX_SAL
+					FROM MONTH_SALARY RIGHT OUTER JOIN DUAL
+					ON APPLY_YEAR_MONTH = #{applyYearMonth}
+					) S
+				WHERE B.EMP_CODE = S.EMP_CODE(+)
+				AND B.EMP_CODE LIKE #{empCode}
+				AND B.USER_OR_NOT = 'Y'
+				ORDER BY B.EMP_CODE
+		]]>
+	</select>
+	
+	<parameterMap id="monthSalary" type="java.util.HashMap">
+		<parameter property="empCode" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+		<parameter property="applyYearMonth" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+		<parameter property="deptCode" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+		<parameter property="RESULT" jdbcType="CURSOR" javaType="java.sql.ResultSet" mode="OUT" resultMap="monthSalaryResult"/>
+		<parameter property="ERROR_CODE" jdbcType="VARCHAR" javaType="String" mode="OUT"/>
+		<parameter property="ERROR_MSG" jdbcType="VARCHAR" javaType="String" mode="OUT"/>
+	</parameterMap>
+	
+	<select id="selectMonthSalary" parameterMap="monthSalary" statementType="CALLABLE">
+		<![CDATA[
+		{call P_CREATE_MONTH_SALARY(?,?,?,?,?,?)}
+		]]> 
+	</select>
+	
+	<update id="updateMonthSalary" parameterType="kr.co.seoulit.erp.hr.salary.to.MonthSalaryTO">
+		UPDATE MONTH_SALARY SET
+		TOTAL_PAYMENT = #{totalPayment},
+		FINALIZE_STATUS = #{finalizeStatus},
+		REAL_SALARY = #{realSalary},
+		MEAL_ALLOWANCE = #{mealAllowance},
+		OWNER_CAR_SUB = #{ownerCarSub}
+		WHERE EMP_CODE = #{empCode}
+		AND APPLY_YEAR_MONTH = #{applyYearMonth} 
+	</update>
+	
+	
+	<delete id="deleteMonthSalary" parameterType="kr.co.seoulit.erp.hr.salary.to.MonthSalaryTO">
+		<![CDATA[
+			DELETE FROM MONTH_SALARY 
+			WHERE EMP_CODE = #{empCode}
+			and APPLY_YEAR_MONTH = #{applyYearMonth}
+		]]>
+	</delete>
+	
+	
+	<select id="selectMonthSalaryList" parameterType="kr.co.seoulit.erp.hr.salary.to.MonthSalaryTO" resultMap="monthSalaryResult" >
+		<![CDATA[
+			SELECT B.EMP_CODE,
+				B.EMP_NAME,
+				B.DEPT_CODE,
+				NVL(S.REAL_SALARY,0) AS REAL_SALARY,
+				S.APPLY_YEAR_MONTH,
+				S.BASIC_SALARY,
+				S.TOTAL_EXT_SAL,
+				S.TOTAL_DEDUCTION,
+				S.TOTAL_PAYMENT,
+				S.BONUS,
+				S.FINALIZE_STATUS,
+				S.MEAL_ALLOWANCE, 
+				S.OWNER_CAR_SUB,
+				S.TOTAL_TAX_SAL
+			FROM EMPLOYEE_BASIC B,
+				(
+				SELECT EMP_CODE,
+					APPLY_YEAR_MONTH,
+					BASIC_SALARY,
+					TOTAL_EXT_SAL,
+					TOTAL_DEDUCTION,
+					TOTAL_PAYMENT,
+					BONUS,
+					DEPT_CODE,
+					NVL(REAL_SALARY,0) AS REAL_SALARY,
+					FINALIZE_STATUS,
+					MEAL_ALLOWANCE, 
+					OWNER_CAR_SUB,
+					TOTAL_TAX_SAL
+				FROM MONTH_SALARY RIGHT OUTER JOIN DUAL
+				ON APPLY_YEAR_MONTH LIKE #{applyYearMonth}
+				) S
+			WHERE B.EMP_CODE = S.EMP_CODE(+)
+			AND B.EMP_CODE LIKE #{empCode}
+			AND S.FINALIZE_STATUS = 'Y'
+			ORDER BY S.APPLY_YEAR_MONTH DESC, S.EMP_CODE
+		]]> 
+	</select>
+</mapper>

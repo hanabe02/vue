@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.conexpense.dao.ConExpenseDAO">
+
+    <resultMap type="kr.co.seoulit.erp.hr.conexpense.to.ConExpenseTO" id="RequestResult">
+        <result property="reqNum" column="REQ_NUM"/>
+        <result property="empCode" column="EMP_CODE"/>
+        <result property="empName" column="EMP_NAME"/>
+        <result property="reqDate" column="REQ_DATE"/>
+        <result property="conType" column="CON_TYPE"/>
+        <result property="rel" column="REL"/>
+        <result property="trgt" column="TRGT"/>
+        <result property="conTermStart" column="CON_TERM_START"/>
+        <result property="conTermEnd" column="CON_TERM_END"/>
+        <result property="conAmt" column="CON_AMT"/>
+        <result property="conPlace" column="CON_PLACE"/>
+        <result property="bank" column="BANK"/>
+        <result property="accNum" column="ACC_NUM"/>
+        <result property="accHolder" column="ACC_HOLDER"/>
+        <result property="note" column="NOTE"/>
+        <result property="approvalStatus" column="APPROVAL_STATUS"/>
+    </resultMap>
+
+    <!-- 경조비 신청 내역 전체 조회 -->
+<!--    <select id="getAllConExpenseList" resultMap="RequestResult">-->
+<!--        SELECT *-->
+<!--        FROM CON_EXPENSE-->
+<!--    </select>-->
+
+    <!-- 최신 신청번호 조회 -->
+    <select id="getMaxReqNo" parameterType="String" resultType="String">
+        SELECT MAX(REQ_NUM)
+        FROM CON_EXPENSE
+        WHERE REQ_DATE = #{reqDate}
+    </select>
+
+    <!-- 경조사 신청 번호 조회 -->
+    <select id="getConExpenseByReqNum" parameterType="String" resultType="kr.co.seoulit.erp.hr.conexpense.to.ConExpenseTO">
+        SELECT *
+        FROM CON_EXPENSE
+        WHERE REQ_NUM = #{reqNum}
+    </select>
+
+    <!-- 사원별 경조사 조회 -->
+    <!--경조비 신청(출력) : 신청번호, 신청자(사원명), 신청일자, 경조구분, 대상자, 경조기간, 경조금액 -->
+    <!--경조비 신청(입력) : 사원번호, 사원명 -->
+    <select id="selectConExpenseList" parameterType="map" resultType="kr.co.seoulit.erp.hr.conexpense.to.ConExpenseTO">
+        SELECT c.EMP_CODE,
+        c.REQ_NUM,
+        c.EMP_NAME,
+        c.REQ_DATE,
+        c.CON_TYPE,
+        c.TRGT,
+        c.CON_TERM_START,
+        c.CON_TERM_END,
+        c.CON_AMT,
+        c.REL,
+        c.CON_PLACE,
+        c.BANK,
+        c.ACC_NUM,
+        c.ACC_HOLDER,
+        c.NOTE,
+        c.APPROVAL_STATUS
+        FROM CON_EXPENSE c
+        <where>
+            <if test="startDate != null and endDate != null">
+                c.REQ_DATE BETWEEN #{startDate} AND #{endDate}
+            </if>
+            <choose>
+                <when test="searchEmpCode == 'undefined'">
+                    AND c.EMP_CODE LIKE '%'
+                </when>
+                <when test="searchEmpCode != null and searchEmpCode != '' and searchEmpCode != 'undefined'">
+                    AND c.EMP_CODE = #{searchEmpCode}
+                </when>
+                <!-- 아무 값도 없으면 아무 조건도 안 넣음 -->
+            </choose>
+        </where>
+        ORDER BY c.REQ_NUM
+    </select>
+
+
+    <!-- 신규 등록 -->
+    <insert id="insertConExpense" parameterType="kr.co.seoulit.erp.hr.conexpense.to.ConExpenseTO">
+        <![CDATA[
+            INSERT INTO CON_EXPENSE VALUES (#{empCode}, #{reqNum}, #{empName}, #{reqDate}, #{conType}, #{trgt}, #{conTermStart}, #{conTermEnd}, #{conAmt}, #{rel},
+                                    #{conPlace}, #{bank}, #{accNum}, #{accHolder}, #{note}, '대기')
+        ]]>
+    </insert>
+
+    <!-- 수정 -->
+    <update id="updateConExpense" parameterType="kr.co.seoulit.erp.hr.conexpense.to.ConExpenseTO">
+        UPDATE CON_EXPENSE
+        SET REQ_NUM        = #{reqNum},
+            EMP_CODE       = #{empCode},
+            EMP_NAME       = #{empName},
+            REQ_DATE       = #{reqDate},
+            CON_TYPE       = #{conType},
+            TRGT           = #{trgt},
+            CON_TERM_START = #{conTermStart},
+            CON_TERM_END   = #{conTermEnd},
+            CON_AMT        = #{conAmt},
+            REL            = #{rel},
+            CON_PLACE      = #{conPlace},
+            BANK           = #{bank},
+            ACC_NUM        = #{accNum},
+            ACC_HOLDER     = #{accHolder},
+            NOTE           = #{note}
+        WHERE EMP_CODE = #{empCode}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="deleteConExpense" parameterType="String">
+        DELETE
+        FROM CON_EXPENSE
+        WHERE REQ_NUM = #{reqNum}
+    </delete>
+
+    <!-- 승인 -->
+    <update id="updateApprovalStatus">
+        UPDATE CON_EXPENSE
+        SET APPROVAL_STATUS = #{status}
+        WHERE REQ_NUM = #{reqNum}
+    </update>
+
+</mapper>

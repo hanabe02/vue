@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.affair.dao.CertificateDAO">
+	
+	<resultMap type="kr.co.seoulit.erp.hr.affair.to.CertificateTO" id="certificateResult">
+		<result property="deptName" column="DEPT_NAME" />
+		<result property="empCode" column="EMP_CODE" />
+		<result property="empName" column="EMP_NAME" />
+		<result property="certificateNo" column="CERTIFICATE_NO" />
+		<result property="category" column="CATEGORY" />
+		<result property="usageCode" column="USAGE_CODE" />
+		<result property="requestDate" column="REQUEST_DATE" />
+		<result property="useDate" column="USE_DATE" />
+		<result property="approvalStatus" column="APPROVAL_STATUS" />
+		<result property="rejectCause" column="REJECT_CAUSE" />
+		<result property="etc" column="ETC" />		
+	</resultMap>
+	
+	<resultMap type="kr.co.seoulit.erp.hr.affair.to.CertificateTO" id="certificateResult2">
+		<result property="empCode" column="EMP_CODE" />
+		<result property="usageCode" column="USAGE_CODE" />
+		<result property="usageName" column="USAGE_NAME" />
+		<result property="certificateNo" column="CERTIFICATE_NO" />
+		<result property="category" column="CATEGORY" />
+		<result property="requestDate" column="REQUEST_DATE" />
+		<result property="useDate" column="USE_DATE" />
+		<result property="approvalStatus" column="APPROVAL_STATUS" />
+		<result property="rejectCause" column="REJECT_CAUSE" />
+		<result property="etc" column="ETC" />		
+	</resultMap>
+	
+	
+	
+
+	<insert id="insertCertificateRequest" parameterType="kr.co.seoulit.erp.hr.affair.to.CertificateTO"><![CDATA[
+		INSERT INTO CERTIFICATE (CERTIFICATE_NO, EMP_CODE, USAGE_CODE, category, REQUEST_DATE, ETC)
+		VALUES ( #{certificateNo}
+			   , #{empCode}
+			   , #{usageCode}
+			   , #{category}
+			   , TO_DATE(#{requestDate}, 'YYYY-MM-DD')
+			   , #{etc})
+	]]></insert>
+
+	<select id="selectCertificateList" resultMap="certificateResult2" parameterType="map">
+		SELECT C.CERTIFICATE_NO, C.CATEGORY, E.EMP_CODE, E.EMP_NAME, D.DEPT_CODE, D.DEPT_NAME, USAGE_CODE, DETAIL_CODE_NAME USAGE_NAME
+			,TO_CHAR(C.REQUEST_DATE, 'YYYY-MM-DD') REQUEST_DATE
+			,TO_CHAR(C.USE_DATE,'YYYY-MM-DD') USE_DATE
+			,C.APPROVAL_STATUS, C.REJECT_CAUSE, C.ETC
+			FROM CERTIFICATE C, CODE_DETAIL D, EMPLOYEE_BASIC E, DEPARTMENT D
+			WHERE 1=1
+			AND C.USAGE_CODE=D.DETAIL_CODE_NUMBER
+			AND E.EMP_CODE=C.EMP_CODE
+			AND E.DEPT_CODE=D.DEPT_CODE
+			AND C.EMP_CODE=#{empCode}
+			AND C.REQUEST_DATE BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD') AND TO_DATE(#{endDate},'YYYY-MM-DD')
+			AND DETAIL_CODE_NUMBER IN ('ELM001', 'ELM002', 'ELM003', 'ELM004')
+			AND C.APPROVAL_STATUS != '승인'
+	</select>
+
+	<select id="selectCertificateListByAllDept" resultMap="certificateResult"
+		parameterType="string">
+		SELECT C.CERTIFICATE_NO, C.CATEGORY, D.DEPT_NAME, C.EMP_CODE, E.EMP_NAME, C.USAGE_CODE, DD.DETAIL_CODE_NAME,
+		TO_CHAR(REQUEST_DATE, 'YYYY-MM-DD') REQUEST_DATE,
+		TO_CHAR(USE_DATE, 'YYYY-MM-DD') USE_DATE,
+		APPROVAL_STATUS, REJECT_CAUSE, ETC
+		FROM CERTIFICATE C, EMPLOYEE_BASIC E, DEPARTMENT D, CODE_DETAIL DD
+		WHERE C.EMP_CODE=E.EMP_CODE(+)
+		AND E.DEPT_CODE=D.DEPT_CODE(+)
+		AND C.USAGE_CODE=DD.DETAIL_CODE_NUMBER(+)
+		AND REQUEST_DATE BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD') AND TO_DATE(#{endDate},'YYYY-MM-DD')
+		AND APPROVAL_STATUS IN ('승인대기', '승인')
+	</select>
+
+	<select id="selectCertificateListByDept" resultMap="certificateResult"
+		parameterType="map">
+		SELECT C.CERTIFICATE_NO, C.CATEGORY, D.DEPT_NAME, C.EMP_CODE, E.EMP_NAME, C.USAGE_CODE, DD.DETAIL_CODE_NAME as usageName,
+		TO_CHAR(REQUEST_DATE, 'YYYY-MM-DD') REQUEST_DATE,
+		TO_CHAR(USE_DATE, 'YYYY-MM-DD') USE_DATE,
+		APPROVAL_STATUS, REJECT_CAUSE, ETC
+		FROM CERTIFICATE C, EMPLOYEE_BASIC E,DEPARTMENT D, CODE_DETAIL DD
+		WHERE C.EMP_CODE=E.EMP_CODE(+)
+		AND E.DEPT_CODE=D.DEPT_CODE(+)
+		AND C.USAGE_CODE=DD.DETAIL_CODE_NUMBER(+)
+		AND D.DEPT_NAME=#{deptName}
+		AND REQUEST_DATE BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD') AND TO_DATE(#{endDate},'YYYY-MM-DD')
+		AND APPROVAL_STATUS IN ('승인대기', '승인')
+	</select>
+
+	<update id="updateCertificateRequest" parameterType="kr.co.seoulit.erp.hr.affair.to.CertificateTO">
+		<![CDATA[
+		UPDATE CERTIFICATE
+		SET USE_DATE = null,
+			REJECT_CAUSE = null,
+			USAGE_CODE = #{usageCode},
+			CATEGORY = #{category},
+			APPROVAL_STATUS = '승인대기',
+			REQUEST_DATE = TO_DATE(#{requestDate}, 'YYYY-MM-DD'),
+			ETC = #{etc}
+		WHERE CERTIFICATE_NO = #{certificateNo}
+		]]>
+	</update>
+
+	<delete id="deleteCertificate" parameterType="kr.co.seoulit.erp.hr.affair.to.CertificateTO">
+		DELETE FROM CERTIFICATE 
+		WHERE CERTIFICATE_NO=#{certificateNo}
+		AND APPROVAL_STATUS != '승인'
+	</delete>
+
+	<update id="approvalCertificate" parameterType="map">
+		<![CDATA[
+		UPDATE CERTIFICATE
+		SET	APPROVAL_STATUS=#{approvalStatus},  REJECT_CAUSE=#{rejectCause}
+		WHERE CERTIFICATE_NO=#{certificateNo}
+			]]>
+	</update>
+
+	<select id="selectCertificateMaxNo" parameterType="String" resultType="String">
+		<![CDATA[
+		SELECT
+			MAX(CERTIFICATE_NO)
+		FROM CERTIFICATE
+		WHERE CERTIFICATE_NO LIKE '%'||#{today}||'%'
+		]]>
+	</select>
+
+	<select id="selectCertificateCount" parameterType="String" resultType="integer">
+		SELECT COUNT(*) FROM CERTIFICATE WHERE REQUEST_DATE =TO_DATE(#{estimateDate},'YYYY-MM-DD')
+	</select>
+
+	<update id="updateUsageDate" parameterType="String">
+		UPDATE CERTIFICATE
+		SET USE_DATE=TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+		WHERE CERTIFICATE_NO=#{certificateNo}
+	</update>
+
+	<select id="printCertificateInfo" parameterType="String" resultType="kr.co.seoulit.erp.hr.affair.to.PrintCertificateTO">
+		SELECT DISTINCT C.CERTIFICATE_NO, B.EMP_CODE, B.EMP_NAME, B.GENDER, S.SOCIAL_SECURITY_NUMBER, D.PHONE_NUMBER,
+						D.BASIC_ADDRESS, (SELECT (COUNT(*) + 1) FROM FAMILY_INFO WHERE EMP_CODE = B.EMP_CODE) AS NUMBER_OF_FAMILY,
+						DE.DEPT_NAME, P.POSITION_NAME, B.HIRE_DATE, B.RETIREMENT_DATE, D.LEVEL_OF_EDUCATION
+		FROM CERTIFICATE C, EMPLOYEE_BASIC B, EMPLOYEE_DETAIL D, EMPLOYEE_SECRET S, POSITION P, DEPARTMENT DE
+		WHERE 1=1
+		  AND C.EMP_CODE=B.EMP_CODE
+		  AND B.EMP_CODE=D.EMP_CODE
+		  AND B.EMP_CODE=S.EMP_CODE
+		  AND D.POSITION_CODE=P.POSITION_CODE
+		  AND B.DEPT_CODE=DE.DEPT_CODE
+		  AND C.CERTIFICATE_NO=#{certificateNo}
+		  AND C.APPROVAL_STATUS = '승인'
+	</select>
+</mapper>
+	
+	

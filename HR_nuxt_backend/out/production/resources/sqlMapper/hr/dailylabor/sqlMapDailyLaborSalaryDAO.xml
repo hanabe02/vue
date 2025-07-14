@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.dailylabor.dao.DailyLaborSalaryDAO">
+    <resultMap type="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborSalaryTO" id="dailyLaborSalaryDetailedResult">
+        <result property="employeeId" column="EMP_ID" />
+        <result property="employeeName" column="EMP_NAME" />
+        <result property="workDate" column="WORK_DATE" />
+        <result property="totalPay" column="WORK_TOTAL_PAY" />
+        <result property="normalPay" column="WORK_PAY" />
+        <result property="overtimePay" column="OVERTIME_PAY" />
+        <result property="nightPayRate" column="NIGHT_PAY" />
+        <result property="workTax" column="WORK_TAX" />
+        <result property="deadlineRequest" column="DEADLINE_REQUEST" />
+        <result property="status" column="STATUS" />
+    </resultMap>
+
+    <select id="findSalaryList" resultMap="dailyLaborSalaryDetailedResult">
+        SELECT *
+        FROM DAILY_LABOR_SALARY
+        WHERE WORK_DATE = TO_DATE(#{date}, 'YYYY-MM-DD')
+        AND DEADLINE_REQUEST = #{deadline}
+        AND STATUS = #{status}
+    </select>
+
+    <insert id="insertSalaryList" statementType="CALLABLE">
+    <![CDATA[
+        {CALL VUE77.P_CALCULATE_SALARY(TO_DATE(#{date}, 'YYYY-MM-DD'))}
+        ]]>
+    </insert>
+
+    <insert id="insertTaxList" statementType="CALLABLE">
+    <![CDATA[
+        {CALL VUE77.P_CALCULATE_TAX(TO_DATE(#{date}, 'YYYY-MM-DD'))}
+        ]]>
+    </insert>
+
+    <update id="updateSalaryList" parameterType="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborSalaryTO">
+    <![CDATA[
+        UPDATE DAILY_LABOR_SALARY
+        SET STATUS = 'Y'
+        WHERE EMP_ID = #{employeeId}
+        and WORK_DATE = #{workDate}
+        ]]>
+	</update>
+
+    <delete id="deleteSalary" parameterType="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborSalaryTO">
+		<![CDATA[
+        DELETE FROM DAILY_LABOR_SALARY
+        WHERE EMP_ID = #{employeeId}
+          and WORK_DATE = #{workDate}
+        ]]>
+	</delete>
+
+    <resultMap type="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborTaxTO" id="dailyLaborTaxDetailedResult">
+        <result property="attributionYear" column="ATTRIBUTION_YEAR" />
+        <result property="healthInsureRates" column="HEALTH_INSURE_RATES" />
+        <result property="longTermCareRate" column="LONG_TERM_CARE_RATE" />
+        <result property="nationPensionRates" column="NATION_PENSION_RATES" />
+        <result property="empInsureRates" column="EMP_INSURE_RATES" />
+        <result property="wrkInsureRates" column="WRK_INSURE_RATES" />
+        <result property="incomeTaxRates" column="INCOME_TAX_RATES" />
+        <result property="localIncomeTaxRates" column="LOCAL_INCOME_TAX_RATES" />
+    </resultMap>
+
+    <resultMap type="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborSalaryTaxTO" id="dailyLaborSalaryTaxDetailedResult">
+        <result property="employeeId" column="EMP_ID" />
+        <result property="employeeName" column="EMP_NAME" />
+        <result property="workDate" column="WORK_DATE" />
+        <result property="totalPay" column="WORK_TOTAL_PAY" />
+        <result property="normalPay" column="WORK_PAY" />
+        <result property="overtimePay" column="OVERTIME_PAY" />
+        <result property="nightPayRate" column="NIGHT_PAY" />
+        <result property="workTax" column="WORK_TAX" />
+        <result property="deadlineRequest" column="DEADLINE_REQUEST" />
+        <result property="status" column="STATUS" />
+        <result property="totalTax" column="TOTAL_TAX" />
+        <result property="nationTax" column="NATION_TAX" />
+        <result property="healthTax" column="HEALTH_TAX" />
+        <result property="longTermTax" column="LONG_TERM_TAX" />
+        <result property="empInsureTax" column="EMP_INSURE_TAX" />
+        <result property="industInsureTax" column="INDUST_INSURE_TAX" />
+        <result property="incomeTax" column="INCOME_TAX" />
+        <result property="localIncomeTax" column="LOCAL_INCOME_TAX" />
+    </resultMap>
+
+    <select id="selectSalaryTaxList" resultMap="dailyLaborSalaryTaxDetailedResult">
+        <![CDATA[
+        SELECT
+            sl.EMP_ID,
+            sl.EMP_NAME,
+            sl.WORK_DATE,
+            sl.WORK_TOTAL_PAY,
+            sl.WORK_PAY,
+            sl.OVERTIME_PAY,
+            sl.NIGHT_PAY,
+            dt.TOTAL_TAX,
+            dt.NATION_TAX,
+            dt.HEALTH_TAX,
+            dt.LONG_TERM_TAX,
+            dt.EMP_INSURE_TAX,
+            dt.INDUST_INSURE_TAX,
+            dt.INCOME_TAX,
+            dt.LOCAL_INCOME_TAX
+        FROM DAILY_LABOR_SALARY sl
+        LEFT JOIN DAILY_LABOR_TAX dt
+        ON sl.EMP_ID = dt.EMP_ID AND sl.WORK_DATE = dt.WORK_DATE
+        WHERE sl.WORK_DATE = TO_DATE(#{workDate}, 'YYYY-MM-DD')
+          AND sl.DEADLINE_REQUEST = #{deadlineRequest}
+          AND sl.STATUS = #{status}
+        ]]>
+    </select>
+
+    <delete id="deleteTax" parameterType="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborSalaryTO">
+		<![CDATA[
+        DELETE FROM DAILY_LABOR_TAX
+        WHERE EMP_ID = #{employeeId}
+          and WORK_DATE = #{workDate}
+        ]]>
+	</delete>
+
+    <update id="updateSalaryTaxList" parameterType="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborSalaryTO">
+    <![CDATA[
+        UPDATE DAILY_LABOR_SALARY
+        SET DEADLINE_REQUEST = 'Y'
+        WHERE EMP_ID = #{employeeId}
+          and WORK_DATE = #{workDate}
+        ]]>
+	</update>
+
+
+    <select id="findTaxList" resultMap="dailyLaborTaxDetailedResult">
+        SELECT *
+        FROM DAILY_LABOR_SOCIAL_INSURE
+        WHERE ATTRIBUTION_YEAR = #{date}
+    </select>
+</mapper>

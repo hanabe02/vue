@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.seoulit.erp.hr.base.dao.DeptDAO">
+
+
+		<resultMap type="kr.co.seoulit.erp.hr.base.to.DeptTO" id="deptResult">
+			<result property="deptCode" column="DEPT_CODE" />
+			<result property="deptName" column="DEPT_NAME" />
+			<result property="deptTel" column="DEPT_TEL" />
+			<result property="workplaceCode" column="WORKPLACE_CODE" />
+			<result property="workplaceName" column="WORKPLACE_NAME" />
+			<result property="companyCode" column="COMPANY_CODE" />
+			<result property="deptStartDate" column="DEPT_START_DATE" />
+			<result property="deptEndDate" column="DEPT_END_DATE" />
+			<result property="empName" column="EMP_NAME" />
+			<result property="positionName" column="POSITION_NAME" />
+			<result property="head" column="HEAD" />
+			<result property="count" column="COUNT" />
+
+			</resultMap>
+
+		<select id="selectDeptList" resultMap="deptResult">
+			SELECT *
+			FROM DEPARTMENT
+			ORDER BY DEPT_CODE
+		</select>
+
+		<select id="selectDeptListDetail" resultMap="deptResult">
+			SELECT D.DEPT_NAME, B.DEPT_CODE
+			FROM DEPARTMENT D,(
+				SELECT EB.DEPT_CODE
+				FROM EMPLOYEE_BASIC EB
+				GROUP BY EB.DEPT_CODE
+				ORDER BY DEPT_CODE
+				) B
+			WHERE B.DEPT_CODE = D.DEPT_CODE
+		</select>
+
+		<select id="selectDeptManageList" resultMap="deptResult">
+			<![CDATA[
+				SELECT  T.WORKPLACE_NAME, T.DEPT_CODE, T.DEPT_NAME, T.DEPT_START_DATE, T.COUNT, (T.EMP_NAME || '(' || T.POSITION_NAME || ')') AS HEAD, T.WORKPLACE_CODE
+				FROM (
+				    SELECT
+				        E.EMP_NAME,
+				        D.DEPT_NAME,
+				        P.POSITION_NAME,
+				        D.DEPT_CODE,
+				        ED.POSITION_CODE,
+				        D.DEPT_START_DATE,
+				        D.COUNT,
+				        D.WORKPLACE_NAME,
+				        D.WORKPLACE_CODE,
+				        ROW_NUMBER() OVER (PARTITION BY ED.DEPT_CODE,D.DEPT_NAME ORDER BY ED.POSITION_CODE, WI.HOBONG DESC) AS RN
+				    FROM
+				    (
+				    	SELECT D.DEPT_CODE, D.DEPT_NAME, COUNT(SE.DEPT_CODE) AS COUNT, D.DEPT_START_DATE,D.WORKPLACE_NAME,D.WORKPLACE_CODE
+						FROM DEPARTMENT D
+						LEFT JOIN EMPLOYEE_BASIC SE ON SE.DEPT_CODE = D.DEPT_CODE
+						GROUP BY D.DEPT_CODE, D.DEPT_NAME, D.DEPT_START_DATE,D.WORKPLACE_NAME,D.WORKPLACE_CODE
+				    ) D
+				    LEFT JOIN EMPLOYEE_BASIC E ON E.DEPT_CODE = D.DEPT_CODE
+				    LEFT JOIN EMPLOYEE_DETAIL ED ON ED.EMP_CODE = E.EMP_CODE
+				    LEFT JOIN WORK_INFO WI ON WI.EMP_CODE = E.EMP_CODE
+				    LEFT JOIN POSITION P ON ED.POSITION_CODE = P.POSITION_CODE
+				) T
+				WHERE T.RN = 1
+			]]>
+		</select>
+
+			<update id="updateDept" parameterType="kr.co.seoulit.erp.hr.base.to.DeptTO">
+			UPDATE DEPARTMENT SET
+				DEPT_NAME = #{deptName}
+			WHERE WORKPLACE_CODE = #{workplaceCode} AND DEPT_CODE = #{deptCode}
+		</update>
+
+<!-- 			<insert id="registDept"  parameterType="kr.co.seoulit.erp.hr.base.to.DeptTO">
+			Insert into DEPARTMENT
+		( WORKPLACE_CODE , DEPT_CODE , DEPT_NAME ,
+		WORKPLACE_NAME , COMPANY_CODE ,
+		DEPT_START_DATE , DEPT_END_DATE )
+	values ( 'BRC-01' ,
+			 #{deptCode} ,
+			 #{deptName} ,
+			 #{workplaceName} ,
+			 #{companyCode} ,
+			 #{deptStartDate} ,
+			 #{deptEndDate} )
+		</insert> -->
+
+
+	<parameterMap type="kr.co.seoulit.erp.hr.base.to.DeptTO" id="AddDeptInfo" >
+		<parameter property="workplaceCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+		<parameter property="deptCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+		<parameter property="deptName" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+		<parameter property="workplaceName" jdbcType="NVARCHAR" javaType="java.lang.String" mode="IN" />
+		<parameter property="deptStartDate" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+		<parameter property="errorCode" jdbcType="VARCHAR" javaType="java.lang.Integer" mode="OUT" />
+		<parameter property="errorMsg" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT" />
+	</parameterMap>
+
+	<insert id="insertDept" parameterMap="AddDeptInfo" statementType="CALLABLE">
+		<![CDATA[
+		{CALL P_ADD_DEPT(?,?,?,?,?,?,?)}
+		]]>
+		</insert>
+
+<!-- 			<delete id="deleteDept" parameterType="kr.co.seoulit.erp.hr.base.to.DeptTO">
+			DELETE FROM DEPARTMENT
+			WHERE DEPT_CODE =  #{deptCode}
+		</delete> -->
+		<delete id="deleteDept" parameterType="kr.co.seoulit.erp.hr.base.to.DeptTO">
+			<![CDATA[
+				DELETE FROM DEPARTMENT
+				WHERE DEPT_CODE = #{deptCode}
+				AND WORKPLACE_CODE = #{workplaceCode}
+			]]>
+		</delete>
+
+		</mapper>
+
+

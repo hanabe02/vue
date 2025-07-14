@@ -1,0 +1,1 @@
+import{u as t}from"./useSkins.775fd654.js";import{d as a,a as n,b as o,C as l}from"./entry.03463029.js";const _={class:"layout-wrapper layout-blank"},i=a({__name:"blank",setup(r){const{injectSkinClasses:e}=t();return e(),(s,c)=>(n(),o("div",_,[l(s.$slots,"default")]))}});export{i as default};

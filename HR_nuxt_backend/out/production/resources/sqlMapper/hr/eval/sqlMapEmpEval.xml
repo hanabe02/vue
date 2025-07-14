@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.eval.dao.EmpEvalDAO">
+
+    <resultMap type="kr.co.seoulit.erp.hr.eval.to.EmpEvalTO" id="EvalResult">
+        <result property="empCode" column="EMP_CODE" />
+        <result property="empName" column="EMP_NAME" />
+        <result property="deptName" column="DEPT_NAME" />
+        <result property="positionName" column="POSITION_NAME" />
+        <result property="durationOfTraining" column="DURATION_OF_TRAINING" />
+        <result property="numberOfCertificate" column="NUMBER_OF_CERTIFICATE" />
+        <result property="numberOfRestDay" column="NUMBER_OF_REST_DAY" />
+        <result property="remainingHoliday" column="REMAINING_HOLIDAY" />
+        <result property="disqualification" column="DISQUALIFICATION" />
+        <result property="lastSchool" column="LAST_SCHOOL" />
+        <result property="score" column="SCORE" />
+        <result property="grade" column="GRADE" />
+        <result property="searchYear" column="SEARCH_YEAR" />
+        <result property="career" column="CAREER" />
+        <result property="status" column="STATUS" />
+    </resultMap>
+
+
+    <select id="selectEmpEval" resultMap="EvalResult">
+        SELECT *
+        FROM EMP_EVAL
+        WHERE SEARCH_YEAR = #{searchYear}
+        AND EMP_CODE = #{empCode}
+    </select>
+
+    <select id="selectEmpEvalByDept" resultMap="EvalResult">
+    SELECT EMP_CODE, EMP_NAME, DEPT_NAME, POSITION_NAME, DURATION_OF_TRAINING,
+        NUMBER_OF_CERTIFICATE, NUMBER_OF_REST_DAY, REMAINING_HOLIDAY,
+        DISQUALIFICATION, LAST_SCHOOL, SCORE, GRADE, CAREER, STATUS, SEARCH_YEAR
+        FROM (
+            SELECT E.EMP_CODE, E.EMP_NAME, E.DEPT_NAME, E.POSITION_NAME,
+                    E.DURATION_OF_TRAINING, E.NUMBER_OF_CERTIFICATE,
+                    E.NUMBER_OF_REST_DAY, E.REMAINING_HOLIDAY, E.DISQUALIFICATION,
+                    E.LAST_SCHOOL, E.SCORE, E.GRADE, E.CAREER, E.SEARCH_YEAR, E.STATUS, D.DEPT_CODE
+            FROM EMP_EVAL E, EMPLOYEE_BASIC B, DEPARTMENT D
+            WHERE B.DEPT_CODE=D.DEPT_CODE
+            AND E.EMP_CODE=B.EMP_CODE)
+            WHERE SEARCH_YEAR = #{searchYear}
+            AND DEPT_CODE = #{deptCode}
+    </select>
+
+    <select id="selectEmpEvalByStatus" resultMap="EvalResult">
+        SELECT *
+        FROM EMP_EVAL
+        WHERE SEARCH_YEAR = #{searchYear}
+        AND STATUS = #{status}
+    </select>
+
+    <parameterMap type="kr.co.seoulit.erp.hr.eval.to.EmpEvalTO" id="registerEmpEval">
+        <parameter property="empCode" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+        <parameter property="searchYear" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+    </parameterMap>
+
+    <insert id="insertEmpEval" parameterMap="registerEmpEval">
+    <![CDATA[
+        {call P_EMP_EVAL(?,?)}
+        ]]>
+    </insert>
+
+    <parameterMap type="kr.co.seoulit.erp.hr.eval.to.EmpEvalTO" id="registerEmpEvalByDept">
+        <parameter property="deptCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        <parameter property="searchYear" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    </parameterMap>
+
+    <insert id="insertEmpEvalByDept" parameterMap="registerEmpEvalByDept">
+        {call P_EMP_EVAL_BY_DEPT(
+            #{deptCode, jdbcType=VARCHAR, javaType=java.lang.String, mode=IN},
+            #{searchYear, jdbcType=VARCHAR, javaType=java.lang.String, mode=IN}
+            )}
+    </insert>
+
+    <delete id="deleteEmpEval" parameterType="String">
+    <![CDATA[
+        DELETE FROM EMP_EVAL
+        WHERE EMP_CODE = #{empCode}
+          AND SEARCH_YEAR = #{searchYear}
+        ]]>
+</delete>
+
+    <parameterMap type="kr.co.seoulit.erp.hr.eval.to.EmpEvalTO" id="approveOrReferEval">
+        <parameter property="empCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        <parameter property="searchYear" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        <parameter property="status" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    </parameterMap>
+
+    <update id="updateEvalStatus" parameterMap="approveOrReferEval">
+        {call P_EMP_EVAL_APPROVE_OR_REFER(?,?,?)}
+    </update>
+
+    <insert id="insertKpi" parameterType="map">
+        INSERT INTO HR_KPI_PLAN(
+            EMP_CODE, TARGET_YEAR, PERF_GOAL, PERFORMANCE_INDICATOR, MEASUREMENT_CRITERIA, UNIT, WEIGHT, CALC_METHOD, TARGET,
+            STATUS
+        )VALUES(
+                   #{empCode},
+                   #{targetYear},
+                   #{perfGoal},
+                   #{performanceIndicator},
+                   #{measurementCriteria},
+                   #{unit},
+                   #{weight},
+                   #{calcMethod},
+                   #{target},
+                   '승인미완료'
+               )
+    </insert>
+
+
+<resultMap type="kr.co.seoulit.erp.hr.eval.to.EmpKpiTO" id="KpiPerfResult">
+    <result property="empCode" column="EMP_CODE" />
+    <result property="targetYear" column="TARGET_YEAR" />
+    <result property="perfGoal" column="PERF_GOAL" />
+    <result property="performanceIndicator" column="PERFORMANCE_INDICATOR" />
+    <result property="measurementCriteria" column="MEASUREMENT_CRITERIA" />
+    <result property="unit" column="UNIT" />
+    <result property="weight" column="WEIGHT" />
+    <result property="target" column="TARGET" />
+    <result property="actual" column="ACTUAL" />
+    <result property="achievementRate" column="ACHIEVEMENT_RATE" />
+    <result property="score" column="SCORE" />
+    <result property="status" column="STATUS" />
+    <result property="empName" column="EMP_NAME"/>
+</resultMap>
+
+    <select id="selectKpiPerf" resultMap="KpiPerfResult">
+        SELECT *
+        FROM HR_KPI_PERF
+        WHERE TARGET_YEAR = #{targetYear}
+          AND EMP_CODE = #{empCode}
+    </select>
+
+<resultMap type="kr.co.seoulit.erp.hr.eval.to.EmpKpiTO" id="KpiResult">
+    <result property="empCode" column="EMP_CODE" />
+    <result property="targetYear" column="TARGET_YEAR" />
+    <result property="perfGoal" column="PERF_GOAL" />
+    <result property="performanceIndicator" column="PERFORMANCE_INDICATOR" />
+    <result property="measurementCriteria" column="MEASUREMENT_CRITERIA" />
+    <result property="unit" column="UNIT" />
+    <result property="weight" column="WEIGHT" />
+    <result property="target" column="TARGET" />
+    <result property="actual" column="ACTUAL" />
+    <result property="calcMethod" column="CALC_METHOD" />
+    <result property="achievementRate" column="ACHIEVEMENT_RATE" />
+    <result property="score" column="SCORE" />
+    <result property="status" column="STATUS" />
+    <result property="empName" column="EMP_NAME"/>
+</resultMap>
+
+    <select id="selectKpiPlan" resultMap="KpiResult">
+        SELECT B.EMP_NAME, A.PERF_GOAL, A.PERFORMANCE_INDICATOR, A.MEASUREMENT_CRITERIA, A.UNIT, A.CALC_METHOD, A.TARGET, A.STATUS, A.EMP_CODE, A.WEIGHT
+        FROM HR_KPI_PLAN A, EMPLOYEE_BASIC B
+        WHERE A.TARGET_YEAR = #{targetYear}
+          AND A.STATUS = #{status}
+          AND A.EMP_CODE = B.EMP_CODE
+    </select>
+
+    <delete id="deleteKpiPlan" parameterType="kr.co.seoulit.erp.hr.eval.to.EmpKpiTO">
+        DELETE FROM HR_KPI_PLAN
+        WHERE TARGET_YEAR = #{targetYear}
+          AND EMP_CODE = #{empCode}
+          AND PERFORMANCE_INDICATOR = #{performanceIndicator}
+          AND STATUS = #{status}
+    </delete>
+
+    <parameterMap type="kr.co.seoulit.erp.hr.eval.to.EmpKpiTO" id="approveOrReferKpi">
+        <parameter property="empCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        <parameter property="targetYear" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        <parameter property="status" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        <parameter property="performanceIndicator" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    </parameterMap>
+
+    <update id="updateKpiStatus" parameterMap="approveOrReferKpi">
+        {call P_EMP_KPI_APPROVE_OR_REFER(?,?,?,?)}
+    </update>
+
+
+    <parameterMap type="kr.co.seoulit.erp.hr.eval.to.EmpKpiTO" id="insertKpiPerf">
+        <parameter property="empCode" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+        <parameter property="targetYear" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"/>
+    </parameterMap>
+
+    <insert id="insertKpiPerf" parameterMap="insertKpiPerf">
+        {call P_EMP_KPI_PERF(?,?)}
+    </insert>
+
+</mapper>

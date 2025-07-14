@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.dailylabor.dao.DailyLaborEmpDAO">
+    <resultMap type="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborEmpTO" id="dailyLaboarEmpDetailedResult">
+        <result property="employeeId" column="EMP_ID" />
+        <result property="employeeName" column="EMP_NAME" />
+        <result property="residentialNumber" column="RES_NUMBER" />
+        <result property="nationality" column="NATIONALITY" />
+        <result property="department" column="DEPT" />
+        <result property="project" column="PROJECT" />
+        <result property="workStartDate" column="WORK_START_DATE" />
+        <result property="workEndDate" column="WORK_END_DATE" />
+        <result property="employmentInsuranceEligibility" column="INSURANCE_ELIGIBILITY" />
+        <result property="normalPayType" column="PAY_TYPE" />
+        <result property="normalPay" column="NORMAL_PAY" />
+        <result property="overtimePayRate" column="OVERTIME_PAY_RATE" />
+        <result property="nightPayRate" column="NIGHT_PAY_RATE" />
+        <result property="bankName" column="BANK_NAME" />
+        <result property="accountNumber" column="ACCOUNT_NUM" />
+        <result property="accountHolder" column="ACCOUNT_HOLDER" />
+        <result property="phoneNumber" column="PHONE_NUM" />
+        <result property="email" column="EMAIL" />
+        <result property="status" column="STATUS" />
+    </resultMap>
+
+    <!-- 일용근로 직원 조회 -->
+    <select id="selectDailyLaborEmpAllList" resultMap="dailyLaboarEmpDetailedResult">
+        SELECT *
+        FROM DAILY_LABOR_EMPLOYEE
+        ORDER BY EMP_ID
+    </select>
+
+    <select id="selectDailyLaborEmpDetail" resultMap="dailyLaboarEmpDetailedResult">
+        SELECT *
+        FROM DAILY_LABOR_EMPLOYEE
+        WHERE EMP_ID = #{empCode}
+        ORDER BY EMP_ID
+    </select>
+
+    <insert id="dailyLaborRegiEmployee" parameterType="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborEmpTO">
+        INSERT INTO DAILY_LABOR_EMPLOYEE (
+            EMP_ID,
+            EMP_NAME,
+            RES_NUMBER,
+            NATIONALITY,
+            DEPT,
+            PROJECT,
+            WORK_START_DATE,
+            WORK_END_DATE,
+            INSURANCE_ELIGIBILITY,
+            PAY_TYPE,
+            NORMAL_PAY,
+            OVERTIME_PAY_RATE,
+            NIGHT_PAY_RATE,
+            BANK_NAME,
+            ACCOUNT_NUM,
+            ACCOUNT_HOLDER,
+            PHONE_NUM,
+            EMAIL,
+            STATUS
+        ) VALUES (
+                     #{employeeId},
+                     #{employeeName},
+                     #{residentialNumber},
+                     #{nationality},
+                     #{department},
+                     #{project},
+                     TO_DATE(#{workStartDate}, 'YYYY-MM-DD'),
+                     TO_DATE(#{workEndDate}, 'YYYY-MM-DD'),
+                     #{employmentInsuranceEligibility},
+                     #{normalPayType},
+                     #{normalPay},
+                     #{overtimePayRate},
+                     #{nightPayRate},
+                     #{bankName},
+                     #{accountNumber},
+                     #{accountHolder},
+                     #{phoneNumber},
+                     #{email},
+                     #{status}
+                 )
+    </insert>
+
+    <update id="updateDailyLaborEmployee" parameterType="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborEmpTO">
+        UPDATE DAILY_LABOR_EMPLOYEE SET
+        EMP_NAME = #{employeeName},
+        RES_NUMBER = #{residentialNumber},
+        NATIONALITY = #{nationality},
+        PROJECT = #{project},
+        WORK_START_DATE = #{workStartDate},
+        WORK_END_DATE = #{workEndDate},
+        INSURANCE_ELIGIBILITY = #{employmentInsuranceEligibility},
+        PAY_TYPE = #{normalPayType},
+        NORMAL_PAY = #{normalPay},
+        OVERTIME_PAY_RATE = #{overtimePayRate},
+        NIGHT_PAY_RATE = #{nightPayRate},
+        BANK_NAME = #{bankName},
+        ACCOUNT_NUM = #{accountNumber},
+        ACCOUNT_HOLDER = #{accountHolder},
+        PHONE_NUM = #{phoneNumber},
+        EMAIL = #{email},
+        DEPT = #{department},
+        STATUS = #{status}
+        WHERE EMP_ID = #{employeeId}
+    </update>
+
+    <delete id="deleteEmp" parameterType="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborEmpTO">
+        DELETE FROM DAILY_LABOR_EMPLOYEE
+        WHERE EMP_ID=#{employeeId}
+    </delete>
+
+    <insert id="insertLog" parameterType="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborEmpTO">
+        INSERT INTO DAILY_LABOR_EMP_LOG (
+            EMP_NAME,
+            RES_NUMBER,
+            NATIONALITY,
+            DEPT,
+            PROJECT,
+            WORK_START_DATE,
+            WORK_END_DATE,
+            INSURANCE_ELIGIBILITY,
+            PAY_TYPE,
+            NORMAL_PAY,
+            OVERTIME_PAY_RATE,
+            NIGHT_PAY_RATE,
+            BANK_NAME,
+            ACCOUNT_NUM,
+            ACCOUNT_HOLDER,
+            PHONE_NUM,
+            EMAIL
+        ) VALUES (
+                     #{employeeName},
+                     #{residentialNumber},
+                     #{nationality},
+                     #{department},
+                     #{project},
+                     TO_DATE(#{workStartDate}, 'YYYY-MM-DD'),
+                     TO_DATE(#{workEndDate}, 'YYYY-MM-DD'),
+                     #{employmentInsuranceEligibility},
+                     #{normalPayType},
+                     #{normalPay},
+                     #{overtimePayRate},
+                     #{nightPayRate},
+                     #{bankName},
+                     #{accountNumber},
+                     #{accountHolder},
+                     #{phoneNumber},
+                     #{email}
+                 )
+    </insert>
+
+    <resultMap type="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborEmpLogTO" id="dailyLaboarEmpLogDetailedResult">
+        <result property="employeeName" column="EMP_NAME" />
+        <result property="residentialNumber" column="RES_NUMBER" />
+        <result property="nationality" column="NATIONALITY" />
+        <result property="department" column="DEPT" />
+        <result property="project" column="PROJECT" />
+        <result property="workStartDate" column="WORK_START_DATE" />
+        <result property="workEndDate" column="WORK_END_DATE" />
+        <result property="employmentInsuranceEligibility" column="INSURANCE_ELIGIBILITY" />
+        <result property="normalPayType" column="PAY_TYPE" />
+        <result property="normalPay" column="NORMAL_PAY" />
+        <result property="overtimePayRate" column="OVERTIME_PAY_RATE" />
+        <result property="nightPayRate" column="NIGHT_PAY_RATE" />
+        <result property="bankName" column="BANK_NAME" />
+        <result property="accountNumber" column="ACCOUNT_NUM" />
+        <result property="accountHolder" column="ACCOUNT_HOLDER" />
+        <result property="phoneNumber" column="PHONE_NUM" />
+        <result property="email" column="EMAIL" />
+    </resultMap>
+
+    <select id="selectEmpLogList" resultMap="dailyLaboarEmpLogDetailedResult">
+        SELECT *
+        FROM DAILY_LABOR_EMP_LOG
+    </select>
+
+    <delete id="deleteEmpLog" parameterType="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborEmpLogTO">
+        DELETE FROM DAILY_LABOR_EMP_LOG
+        WHERE EMP_NAME = #{employeeName}
+        AND RES_NUMBER = #{residentialNumber}
+    </delete>
+</mapper>

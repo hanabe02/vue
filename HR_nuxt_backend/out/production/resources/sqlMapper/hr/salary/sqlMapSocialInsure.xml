@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.salary.dao.SocialInsureDAO">
+
+	<resultMap type="kr.co.seoulit.erp.hr.salary.to.SocialInsureTO" id="insureResult">
+		<result property="attributionYear" column="ATTRIBUTION_YEAR" />
+		<result property="healthInsureRates" column="HEALTH_INSURE_RATES" />
+		<result property="longTermCareRate" column="LONG_TERM_CARE_RATE" />
+		<result property="nationPensionRates" column="NATION_PENSION_RATES" />
+		<result property="teachPenisionRates" column="TEACH_PENISION_RATES" />
+		<result property="empInsureRates" column="EMP_INSURE_RATES" />
+		<result property="wrkInsureRates" column="WRK_INSURE_RATES" />
+		<result property="jobstabilRates" column="JOBSTABIL_RATES" />
+		<result property="vocaCompetencyRates" column="VOCA_COMPETENCY_RATES" />
+		<result property="industInsureRates" column="INDUST_INSURE_RATES" />
+		<result property="industInsureCharRates" column="INDUST_INSURE_CHAR_RATES" />
+	</resultMap>
+
+
+	<select id="selectSocialInsureList" parameterType="String" resultMap="insureResult">
+		SELECT *
+		FROM SOCIAL_INSURE_RATIO
+		WHERE ATTRIBUTION_YEAR = #{searchYear}
+	</select>
+
+	<parameterMap type="kr.co.seoulit.erp.hr.salary.to.SocialInsureTO" id="registerSocialInsure">
+		<parameter property="attributionYear" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+		<parameter property="nationPensionRates" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+		<parameter property="healthInsureRates" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+		<parameter property="longTermCareRate" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+		<parameter property="wrkInsureRates" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+		<parameter property="jobstabilRates" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+		<parameter property="industInsureRates" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+		<parameter property="industInsureCharRates" jdbcType="VARCHAR" javaType="String" mode="IN"/>
+	</parameterMap>
+	<insert id="insertSocialInsure" parameterMap="registerSocialInsure">
+	<![CDATA[
+		{call P_INSERT_SOCIAL_INSURE(?,?,?,?,?,?,?,?)}
+	]]>
+	</insert>
+
+</mapper>

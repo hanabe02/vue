@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.dailylabor.dao.DailyLaborAttendDAO">
+    <resultMap type="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborAttendTO" id="dailyLaborAttendResult">
+        <result property="employeeId" column="EMP_ID" />
+        <result property="employeeName" column="EMP_NAME" />
+        <result property="project" column="PROJECT" />
+        <result property="workDate" column="WORK_DATE" />
+        <result property="workStartTime" column="WORK_START_TIME" />
+        <result property="workEndTime" column="WORK_END_TIME" />
+        <result property="totalWorkTime" column="TOTAL_WORK_TIME" />
+        <result property="workTime" column="WORK_TIME" />
+        <result property="workOverTime" column="WORK_OVER_TIME" />
+        <result property="workNightTime" column="WORK_NIGHT_TIME" />
+        <result property="workType" column="WORK_TYPE" />
+        <result property="deadlineRequest" column="DEADLINE_REQUEST" />
+    </resultMap>
+
+    <select id="selectDailyLaborAttendAllList" resultMap="dailyLaborAttendResult">
+        SELECT *
+        FROM DAILY_LABOR_ATTENDANCE
+        ORDER BY EMP_ID
+    </select>
+
+    <select id="selectDailyLaborAttendDateList" resultMap="dailyLaborAttendResult">
+        SELECT *
+        FROM DAILY_LABOR_ATTENDANCE
+        WHERE WORK_DATE = TO_DATE(#{workDate}, 'YYYY-MM-DD') AND DEADLINE_REQUEST = #{deadlineRequest}
+    </select>
+
+    <insert id="insertAttend" parameterType="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborAttendTO">
+        INSERT INTO DAILY_LABOR_ATTENDANCE (EMP_ID, EMP_NAME, PROJECT, WORK_DATE, WORK_START_TIME, WORK_END_TIME, TOTAL_WORK_TIME, WORK_TIME, WORK_OVER_TIME, WORK_NIGHT_TIME, WORK_TYPE, DEADLINE_REQUEST)
+        VALUES
+            (
+            #{employeeId},
+            #{employeeName},
+            #{project},
+            TO_DATE(#{workDate, jdbcType=DATE}, 'YYYY-MM-DD'),
+            TO_DATE(#{workStartTime, jdbcType=DATE}, 'YYYY-MM-DD HH24:MI'),
+            TO_DATE(#{workEndTime, jdbcType=DATE}, 'YYYY-MM-DD HH24:MI'),
+            #{totalWorkTime, jdbcType=NUMERIC},
+            #{workTime, jdbcType=NUMERIC},
+            #{workOverTime, jdbcType=NUMERIC},
+            #{workNightTime, jdbcType=NUMERIC},
+            #{workType},
+            #{deadlineRequest}
+            )
+    </insert>
+
+    <parameterMap type="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborAttendTO" id="UpdateWorkAttendanceInfo">
+        <parameter property="employeeId" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+        <parameter property="workDate" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+        <parameter property="workEndTime" jdbcType="VARCHAR" javaType="java.lang.String" mode="IN" />
+    </parameterMap>
+
+    <update id="updateWorkAttendance" parameterMap="UpdateWorkAttendanceInfo" statementType="CALLABLE">
+    <![CDATA[
+        {CALL VUE77.P_UPDATE_WORK_ATTENDANCE(?, TO_DATE(?, 'YYYY-MM-DD'), TO_DATE(?, 'YYYY-MM-DD HH24:MI'))}
+        ]]>
+    </update>
+
+    <delete id="deleteDailyLaborAttend" parameterType="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborAttendTO">
+		<![CDATA[
+        DELETE FROM DAILY_LABOR_ATTENDANCE
+        WHERE EMP_ID = #{employeeId}
+        and WORK_DATE = #{workDate}
+        ]]>
+	</delete>
+
+    <update id="updateDailyLaborAttendApproval" parameterType="kr.co.seoulit.erp.hr.dailylabor.to.DailyLaborAttendTO">
+    <![CDATA[
+        UPDATE DAILY_LABOR_ATTENDANCE
+        SET DEADLINE_REQUEST = 'Y'
+        WHERE EMP_ID = #{employeeId}
+        and WORK_DATE = #{workDate}
+        ]]>
+	</update>
+</mapper>

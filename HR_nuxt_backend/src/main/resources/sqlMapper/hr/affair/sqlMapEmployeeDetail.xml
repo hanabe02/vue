@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.erp.hr.affair.dao.EmployeeDetailDAO">
+
+	<resultMap id="employeeDetailResult" type="kr.co.seoulit.erp.hr.affair.to.EmployeeDetailTO">
+		<result property="companyCode" column="COMPANY_CODE"  />
+		<result property="empName" column="EMP_NAME"  />
+		<result property="deptName" column="DEPT_NAME"/>
+		<result property="gender" column="GENDER"  />
+		<result property="hireDate" column="HIRE_DATE"  />
+		<result property="birthDate" column="BIRTH_DATE"  />
+		<result property="empCode" column="EMP_CODE"  />
+		<result property="seq" column="SEQ"  />
+		<result property="updateHistory" column="UPDATE_HISTORY"  />
+		<result property="updateDate" column="UPDATE_DATE"  />
+		<result property="workplaceCode" column="WORKPLACE_CODE"  />
+		<result property="workplaceName" column="WORKPLACE_NAME"  />
+		<result property="deptCode" column="DEPT_CODE"  />
+		<result property="positionCode" column="POSITION_CODE"  />
+		<result property="positionName" column="POSITION_NAME"  />
+		<result property="userId" column="USER_ID"  />
+		<result property="phoneNumber" column="PHONE_NUMBER"  />
+		<result property="email" column="EMAIL"  />
+		<result property="zipCode" column="ZIP_CODE"  />
+		<result property="basicAddress" column="BASIC_ADDRESS"  />
+		<result property="detailAddress" column="DETAIL_ADDRESS"  />
+		<result property="levelOfEducation" column="LEVEL_OF_EDUCATION"  />
+		<result property="image" column="IMAGE" />
+	</resultMap>
+
+	<select id="selectEmployeeDetail" parameterType="map" resultMap="employeeDetailResult">
+		SELECT a.EMP_NAME
+			 ,a.EMP_CODE
+			 ,a.GENDER
+			 ,a.HIRE_DATE
+			 ,a.BIRTH_DATE
+			,b.BASIC_ADDRESS
+            ,b.DETAIL_ADDRESS
+            ,b.EMAIL
+            ,b.LEVEL_OF_EDUCATION
+            ,b.ZIP_CODE
+            ,b.PHONE_NUMBER
+            ,b.IMAGE
+            ,c.POSITION_NAME
+		    ,c.POSITION_CODE
+            ,d.WORKPLACE_NAME
+		    ,d.WORKPLACE_CODE
+            ,e.DEPT_NAME
+			,e.DEPT_CODE
+		FROM EMPLOYEE_BASIC a
+		   , EMPLOYEE_DETAIL b
+		   , POSITION c
+		   ,WORKPLACE d
+		   ,DEPARTMENT e
+		WHERE b.EMP_CODE= a.EMP_CODE
+		  AND b.POSITION_CODE=c.POSITION_CODE
+		  AND b.WORKPLACE_CODE=d.WORKPLACE_CODE
+		  AND b.DEPT_CODE=e.DEPT_CODE
+		  AND b.EMP_CODE=#{empCode}
+		ORDER BY b.UPDATE_DATE DESC
+	</select>
+
+	<select id="selectUserIdList" parameterType="String" resultMap="employeeDetailResult">
+	WITH DETAIL_INFO AS
+	( ( SELECT EMP_CODE, USER_ID, SEQ FROM EMPLOYEE_DETAIL WHERE COMPANY_CODE = #companyCode# ) ),
+
+	MAX_SEQ AS
+	( SELECT EMP_CODE, MAX(SEQ) AS SEQ
+	FROM DETAIL_INFO
+	GROUP BY EMP_CODE ),
+
+	ALL_USER_ID AS
+	( SELECT EMP_CODE, USER_ID
+	FROM DETAIL_INFO
+	WHERE ( EMP_CODE, SEQ ) IN ( SELECT EMP_CODE, SEQ FROM MAX_SEQ ) )
+
+	SELECT EMP_CODE, USER_ID FROM ALL_USER_ID
+	WHERE USER_ID IS NOT NULL
+	ORDER BY EMP_CODE
+	</select>
+
+	<insert id="insertEmployeeDetail" parameterType="kr.co.seoulit.erp.hr.affair.to.EmployeeDetailTO">
+	Insert into EMPLOYEE_DETAIL
+		(COMPANY_CODE , EMP_CODE , SEQ ,
+		UPDATE_HISTORY , UPDATE_DATE , WORKPLACE_CODE ,
+		DEPT_CODE , POSITION_CODE , USER_ID ,
+		PHONE_NUMBER , EMAIL , ZIP_CODE ,
+		BASIC_ADDRESS , DETAIL_ADDRESS ,
+		LEVEL_OF_EDUCATION,IMAGE)
+	values ( #{companyCode} ,
+			 #{empCode} ,
+			 #{seq} ,
+			 #{updateHistory} ,
+			 #{updateDate} ,
+			 #{workplaceCode} ,
+			 #{deptCode} ,
+			 #{positionCode} ,
+			 #{userId} ,
+			 #{phoneNumber} ,
+			 #{email} ,
+			 #{zipCode} ,
+			 #{basicAddress} ,
+			 #{detailAddress} ,
+			 #{levelOfEducation} ,
+			 #{image}
+			)
+	</insert>
+</mapper>
