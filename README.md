@@ -17,7 +17,7 @@ UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일�
   - **모듈화된 스토어 관리**
   - **반응형 지원** (`ref` & `computed` 활용)
   - **Vue DevTools 지원**
-
+s
 - **UI Framework:** Vuetify  
   - **Material Design 기반 UI 프레임워크**
   - 다양한 UI 컴포넌트 제공 → 개발 속도 향상
