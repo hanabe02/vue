@@ -1,4 +1,4 @@
-# 🌟 Vue 프로젝트 (Vue 3 + Nuxt + TypeScript)
+# 🌟 Vue 프로젝트 (Vue 3 + Nuxt + TypeScript)!
 
 이 프로젝트는 **Vue 3, Nuxt, TypeScript** 기반의 웹 애플리케이션입니다.  
 UI 라이브러리로 **Vuetify**를 사용하여 **Material Design** 스타일의 UI를 제공합니다.
